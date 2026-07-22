@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Fundo da página — o mais escuro da hierarquia (como no mockup) */
+    --background: 220 15% 7%;
+    --foreground: 210 20% 96%;
+
+    /* Cards flutuam um degrau acima do fundo, criando profundidade */
+    --card: 217 24% 14%;
+    --card-foreground: 210 20% 96%;
+
+    --popover: 217 22% 16%;
+    --popover-foreground: 210 20% 96%;
+
+    /* Ainda mais escuro que o fundo — usado no sidebar e no hero da landing */
+    --primary: 220 18% 4%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 217 18% 18%;
+    --secondary-foreground: 210 20% 96%;
+
+    /* Laranja "fogo" — CTAs e streak (urgência, energia) */
+    --accent: 24 95% 53%;
+    --accent-foreground: 0 0% 100%;
+    --accent-shadow: 20 85% 30%; /* sombra sólida do efeito "botão gordinho" */
+
+    /* Vermelho — segunda cor do gradiente de fogo do streak */
+    --fire-end: 350 89% 55%;
+    --fire-end-shadow: 350 75% 32%;
+
+    --muted: 217 18% 18%;
+    --muted-foreground: 215 15% 65%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Verde vibrante — progresso, "você está indo bem" */
+    --success: 145 80% 45%;
+    --success-foreground: 0 0% 8%;
+    --success-shadow: 145 75% 22%;
+
+    /* Dourado — conquista, medalha, "você bateu a meta" */
+    --gold: 43 96% 55%;
+    --gold-foreground: 220 15% 8%;
+    --gold-shadow: 38 90% 28%;
+
+    --border: 217 18% 22%;
+    --input: 217 18% 22%;
+    --ring: 24 95% 53%;
+
+    --radius: 1.25rem;
+
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    color-scheme: dark;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display;
+  }
+}

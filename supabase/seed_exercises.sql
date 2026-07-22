@@ -1,0 +1,73 @@
+-- Seed inicial da biblioteca pública de exercícios.
+-- Este arquivo cobre os principais grupos musculares como ponto de partida.
+-- Para chegar aos 1.800+ itens mencionados no briefing, importe um CSV maior
+-- (ex: via Supabase Table Editor > Insert > Import CSV, mapeando as mesmas colunas).
+
+insert into exercises (name, category, muscle_group, equipment, is_public) values
+  ('Supino reto com barra', 'Peito', 'Peitoral maior', 'Barra', true),
+  ('Supino inclinado com halteres', 'Peito', 'Peitoral superior', 'Halteres', true),
+  ('Crucifixo reto', 'Peito', 'Peitoral maior', 'Halteres', true),
+  ('Crossover', 'Peito', 'Peitoral maior', 'Cabo', true),
+  ('Puxada frente', 'Costas', 'Latíssimo do dorso', 'Polia', true),
+  ('Remada curvada com barra', 'Costas', 'Costas médias', 'Barra', true),
+  ('Remada baixa (cabo)', 'Costas', 'Costas médias', 'Cabo', true),
+  ('Levantamento terra', 'Costas', 'Posterior de coxa/lombar', 'Barra', true),
+  ('Desenvolvimento com halteres', 'Ombro', 'Deltoide', 'Halteres', true),
+  ('Elevação lateral', 'Ombro', 'Deltoide medial', 'Halteres', true),
+  ('Elevação frontal', 'Ombro', 'Deltoide anterior', 'Halteres', true),
+  ('Rosca direta com barra', 'Bíceps', 'Bíceps braquial', 'Barra', true),
+  ('Rosca alternada com halteres', 'Bíceps', 'Bíceps braquial', 'Halteres', true),
+  ('Rosca martelo', 'Bíceps', 'Braquiorradial', 'Halteres', true),
+  ('Tríceps corda', 'Tríceps', 'Tríceps braquial', 'Cabo', true),
+  ('Tríceps testa', 'Tríceps', 'Tríceps braquial', 'Barra W', true),
+  ('Mergulho no banco', 'Tríceps', 'Tríceps braquial', 'Peso do corpo', true),
+  ('Agachamento livre', 'Perna', 'Quadríceps/Glúteo', 'Barra', true),
+  ('Leg press 45°', 'Perna', 'Quadríceps', 'Máquina', true),
+  ('Cadeira extensora', 'Perna', 'Quadríceps', 'Máquina', true),
+  ('Mesa flexora', 'Perna', 'Posterior de coxa', 'Máquina', true),
+  ('Afundo com halteres', 'Perna', 'Quadríceps/Glúteo', 'Halteres', true),
+  ('Elevação pélvica', 'Glúteo', 'Glúteo máximo', 'Barra', true),
+  ('Abdução de quadril (máquina)', 'Glúteo', 'Glúteo médio', 'Máquina', true),
+  ('Prancha abdominal', 'Core', 'Core', 'Peso do corpo', true),
+  ('Abdominal supra', 'Core', 'Reto abdominal', 'Peso do corpo', true),
+  ('Elevação de pernas', 'Core', 'Reto abdominal inferior', 'Peso do corpo', true),
+  ('Esteira - caminhada inclinada', 'Cardio', 'Sistema cardiovascular', 'Esteira', true),
+  ('Bicicleta ergométrica', 'Cardio', 'Sistema cardiovascular', 'Bicicleta', true),
+  ('Corda naval (battle rope)', 'Cardio', 'Sistema cardiovascular', 'Corda naval', true)
+on conflict do nothing;
+
+-- Segundo lote: variações adicionais por grupo muscular.
+insert into exercises (name, category, muscle_group, equipment, is_public) values
+  ('Supino declinado com barra', 'Peito', 'Peitoral inferior', 'Barra', true),
+  ('Peck deck (voador)', 'Peito', 'Peitoral maior', 'Máquina', true),
+  ('Flexão de braço', 'Peito', 'Peitoral maior', 'Peso do corpo', true),
+  ('Pullover com halter', 'Peito', 'Peitoral/Serrátil', 'Halteres', true),
+  ('Puxada supinada', 'Costas', 'Latíssimo do dorso/Bíceps', 'Polia', true),
+  ('Remada unilateral com halter', 'Costas', 'Costas médias', 'Halteres', true),
+  ('Remada cavalinho', 'Costas', 'Costas médias', 'Barra T', true),
+  ('Barra fixa (pull-up)', 'Costas', 'Latíssimo do dorso', 'Peso do corpo', true),
+  ('Hiperextensão lombar', 'Costas', 'Lombar', 'Banco romano', true),
+  ('Desenvolvimento militar com barra', 'Ombro', 'Deltoide', 'Barra', true),
+  ('Remada alta', 'Ombro', 'Deltoide/Trapézio', 'Barra', true),
+  ('Crucifixo invertido (posterior)', 'Ombro', 'Deltoide posterior', 'Halteres', true),
+  ('Encolhimento de ombros', 'Ombro', 'Trapézio', 'Halteres', true),
+  ('Rosca scott', 'Bíceps', 'Bíceps braquial', 'Barra W', true),
+  ('Rosca concentrada', 'Bíceps', 'Bíceps braquial', 'Halteres', true),
+  ('Rosca no cabo', 'Bíceps', 'Bíceps braquial', 'Cabo', true),
+  ('Tríceps francês', 'Tríceps', 'Tríceps braquial', 'Halteres', true),
+  ('Tríceps coice', 'Tríceps', 'Tríceps braquial', 'Halteres', true),
+  ('Supino fechado', 'Tríceps', 'Tríceps braquial', 'Barra', true),
+  ('Agachamento búlgaro', 'Perna', 'Quadríceps/Glúteo', 'Halteres', true),
+  ('Stiff (levantamento romeno)', 'Perna', 'Posterior de coxa', 'Barra', true),
+  ('Cadeira adutora', 'Perna', 'Adutores', 'Máquina', true),
+  ('Panturrilha em pé', 'Perna', 'Panturrilha', 'Máquina', true),
+  ('Panturrilha sentado', 'Perna', 'Panturrilha (sóleo)', 'Máquina', true),
+  ('Agachamento sumô', 'Glúteo', 'Glúteo/Adutores', 'Halteres', true),
+  ('Coice na polia (glúteo)', 'Glúteo', 'Glúteo máximo', 'Cabo', true),
+  ('Prancha lateral', 'Core', 'Oblíquos', 'Peso do corpo', true),
+  ('Abdominal bicicleta', 'Core', 'Reto abdominal/Oblíquos', 'Peso do corpo', true),
+  ('Rotação de tronco no cabo', 'Core', 'Oblíquos', 'Cabo', true),
+  ('HIIT em circuito (bodyweight)', 'Cardio', 'Sistema cardiovascular', 'Peso do corpo', true),
+  ('Remo ergométrico', 'Cardio', 'Sistema cardiovascular', 'Remo', true),
+  ('Pular corda', 'Cardio', 'Sistema cardiovascular', 'Corda', true)
+on conflict do nothing;

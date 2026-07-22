@@ -1,0 +1,85 @@
+'use client';
+
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { LayoutDashboard, Users, Dumbbell, ClipboardList, Settings, LogOut, Crown } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
+import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
+import { getPlanTier, type PlanId } from '@/lib/plans';
+
+const links = [
+  { href: '/personal/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/personal/alunos', label: 'Alunos', icon: Users },
+  { href: '/personal/exercicios', label: 'Exercícios', icon: Dumbbell },
+  { href: '/personal/anamneses', label: 'Anamneses', icon: ClipboardList },
+  { href: '/personal/configuracoes', label: 'Configurações', icon: Settings },
+];
+
+export function PersonalSidebar({ plan }: { plan: PlanId }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const supabase = createClient();
+  const tier = getPlanTier(plan);
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    router.push('/login');
+    router.refresh();
+  }
+
+  return (
+    <aside className="flex h-screen w-64 shrink-0 flex-col border-r bg-primary text-primary-foreground">
+      <div className="flex h-16 items-center gap-2 px-5">
+        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-accent">
+          <Dumbbell className="h-4 w-4" />
+        </div>
+        <span className="font-display font-bold">TreinaPro</span>
+      </div>
+
+      <nav className="flex-1 space-y-1 px-3 py-4">
+        {links.map(({ href, label, icon: Icon }) => {
+          const active = pathname === href || pathname.startsWith(href + '/');
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={cn(
+                'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white',
+                active && 'bg-white/10 text-white'
+              )}
+            >
+              <Icon className="h-4 w-4" />
+              {label}
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="space-y-3 border-t border-white/10 p-4">
+        {plan !== 'premium' ? (
+          <Link
+            href="/personal/configuracoes/plano"
+            className="flex items-center justify-between rounded-md bg-white/10 px-3 py-2 text-sm hover:bg-white/15"
+          >
+            <span>Plano {tier.name}</span>
+            <Badge variant="accent" className="gap-1">
+              <Crown className="h-3 w-3" /> Upgrade
+            </Badge>
+          </Link>
+        ) : (
+          <div className="flex items-center gap-2 rounded-md bg-white/10 px-3 py-2 text-sm">
+            <Crown className="h-4 w-4 text-accent" /> Plano Premium
+          </div>
+        )}
+
+        <button
+          onClick={handleLogout}
+          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white"
+        >
+          <LogOut className="h-4 w-4" /> Sair
+        </button>
+      </div>
+    </aside>
+  );
+}
