@@ -1,8 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Users, Dumbbell, ClipboardList, Settings, LogOut, Crown } from 'lucide-react';
+import { LayoutDashboard, Users, Dumbbell, ClipboardList, Settings, LogOut, Crown, Menu, X } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -21,6 +22,7 @@ export function PersonalSidebar({ plan }: { plan: PlanId }) {
   const router = useRouter();
   const supabase = createClient();
   const tier = getPlanTier(plan);
+  const [open, setOpen] = useState(false);
 
   async function handleLogout() {
     await supabase.auth.signOut();
@@ -28,13 +30,19 @@ export function PersonalSidebar({ plan }: { plan: PlanId }) {
     router.refresh();
   }
 
-  return (
-    <aside className="flex h-screen w-64 shrink-0 flex-col border-r bg-primary text-primary-foreground">
-      <div className="flex h-16 items-center gap-2 px-5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-accent">
-          <Dumbbell className="h-4 w-4" />
+  const sidebarContent = (
+    <>
+      <div className="flex h-16 items-center justify-between gap-2 px-5">
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-accent">
+            <Dumbbell className="h-4 w-4" />
+          </div>
+          <span className="font-display font-bold">TreinaPro</span>
         </div>
-        <span className="font-display font-bold">TreinaPro</span>
+        {/* Botão de fechar — só aparece no drawer mobile */}
+        <button onClick={() => setOpen(false)} className="text-white/70 hover:text-white lg:hidden" aria-label="Fechar menu">
+          <X className="h-5 w-5" />
+        </button>
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4">
@@ -44,6 +52,7 @@ export function PersonalSidebar({ plan }: { plan: PlanId }) {
             <Link
               key={href}
               href={href}
+              onClick={() => setOpen(false)}
               className={cn(
                 'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white',
                 active && 'bg-white/10 text-white'
@@ -60,6 +69,7 @@ export function PersonalSidebar({ plan }: { plan: PlanId }) {
         {plan !== 'premium' ? (
           <Link
             href="/personal/configuracoes/plano"
+            onClick={() => setOpen(false)}
             className="flex items-center justify-between rounded-md bg-white/10 px-3 py-2 text-sm hover:bg-white/15"
           >
             <span>Plano {tier.name}</span>
@@ -80,6 +90,38 @@ export function PersonalSidebar({ plan }: { plan: PlanId }) {
           <LogOut className="h-4 w-4" /> Sair
         </button>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Barra superior — só no mobile */}
+      <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-white/10 bg-primary px-4 text-primary-foreground lg:hidden">
+        <button onClick={() => setOpen(true)} aria-label="Abrir menu">
+          <Menu className="h-6 w-6" />
+        </button>
+        <div className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent">
+            <Dumbbell className="h-3.5 w-3.5" />
+          </div>
+          <span className="font-display font-bold">TreinaPro</span>
+        </div>
+      </header>
+
+      {/* Sidebar fixa — só no desktop */}
+      <aside className="hidden h-screen w-64 shrink-0 flex-col border-r bg-primary text-primary-foreground lg:sticky lg:top-0 lg:flex">
+        {sidebarContent}
+      </aside>
+
+      {/* Drawer mobile: overlay + painel deslizante */}
+      {open && (
+        <div className="fixed inset-0 z-40 lg:hidden">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setOpen(false)} aria-hidden="true" />
+          <aside className="absolute inset-y-0 left-0 flex w-64 max-w-[80%] flex-col bg-primary text-primary-foreground shadow-xl">
+            {sidebarContent}
+          </aside>
+        </div>
+      )}
+    </>
   );
 }

@@ -1,20 +1,57 @@
 import Link from 'next/link';
-import { Dumbbell } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
+// Mantido deliberadamente "leve": sem importar componentes de UI (Button etc.),
+// porque qualquer import que puxe bibliotecas baseadas em React Context na
+// cadeia faz o Next 14 falhar ao coletar dados estáticos desta página
+// (erro "createContext is not a function" no _not-found).
 export default function NotFound() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4 bg-secondary p-4 text-center">
-      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-        <Dumbbell className="h-6 w-6" />
+    <main
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '1rem',
+        padding: '1rem',
+        textAlign: 'center',
+        background: 'hsl(220 15% 7%)',
+        color: 'hsl(210 20% 96%)',
+        fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          height: '3rem',
+          width: '3rem',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: '0.75rem',
+          background: 'hsl(24 95% 53%)',
+          fontSize: '1.5rem',
+        }}
+      >
+        🏋️
       </div>
-      <h1 className="font-display text-3xl font-bold">Página não encontrada</h1>
-      <p className="max-w-sm text-muted-foreground">
+      <h1 style={{ fontSize: '1.875rem', fontWeight: 700, margin: 0 }}>Página não encontrada</h1>
+      <p style={{ maxWidth: '24rem', color: 'hsl(215 15% 65%)' }}>
         O link que você acessou não existe ou foi movido. Volte para o início e tente novamente.
       </p>
-      <Button variant="accent" asChild>
-        <Link href="/">Voltar ao início</Link>
-      </Button>
+      <Link
+        href="/"
+        style={{
+          background: 'hsl(24 95% 53%)',
+          color: '#fff',
+          fontWeight: 700,
+          padding: '0.75rem 2rem',
+          borderRadius: '1rem',
+          textDecoration: 'none',
+        }}
+      >
+        Voltar ao início
+      </Link>
     </main>
   );
 }
