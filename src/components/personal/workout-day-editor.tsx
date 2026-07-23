@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { SortableExerciseItem, type DayExercise } from '@/components/personal/sortable-exercise-item';
 import { ExercisePickerDialog } from '@/components/personal/exercise-picker-dialog';
 import type { ExerciseRow } from '@/components/personal/exercise-grid';
+import { groupConsecutive, supersetLabel } from '@/lib/workout-format';
 
 export type WorkoutDay = {
   key: string;
@@ -63,6 +64,28 @@ export function WorkoutDayEditor({
     onChange({ ...day, exercises: day.exercises.filter((e) => e.uid !== uid) });
   }
 
+  // Liga/desliga o exercício do bloco (bi/tri-set) com o exercício anterior.
+  function toggleGroup(uid: string) {
+    const idx = day.exercises.findIndex((e) => e.uid === uid);
+    if (idx <= 0) return;
+    const prev = day.exercises[idx - 1];
+    const cur = day.exercises[idx];
+    const isGrouped = !!cur.group && cur.group === prev.group;
+
+    let exercises: DayExercise[];
+    if (isGrouped) {
+      exercises = day.exercises.map((e) => (e.uid === uid ? { ...e, group: null } : e));
+    } else {
+      const gid = prev.group ?? nanoid(6);
+      exercises = day.exercises.map((e) => {
+        if (e.uid === prev.uid) return { ...e, group: gid };
+        if (e.uid === uid) return { ...e, group: gid };
+        return e;
+      });
+    }
+    onChange({ ...day, exercises });
+  }
+
   function handleSubstituteSelect(ex: ExerciseRow) {
     if (!substitutingUid) return;
     updateExercise(substitutingUid, { exercise_id: ex.id, name: ex.name, category: ex.category });
@@ -90,9 +113,35 @@ export function WorkoutDayEditor({
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={day.exercises.map((e) => e.uid)} strategy={verticalListSortingStrategy}>
             <div className="space-y-2">
-              {day.exercises.map((item) => (
-                <SortableExerciseItem key={item.uid} item={item} onChange={updateExercise} onRemove={removeExercise} onSubstitute={setSubstitutingUid} />
-              ))}
+              {groupConsecutive(day.exercises).map((block, bi) => {
+                const rows = block.map((item) => {
+                  const idx = day.exercises.findIndex((e) => e.uid === item.uid);
+                  const prev = day.exercises[idx - 1];
+                  const grouped = idx > 0 && !!item.group && item.group === prev?.group;
+                  return (
+                    <SortableExerciseItem
+                      key={item.uid}
+                      item={item}
+                      onChange={updateExercise}
+                      onRemove={removeExercise}
+                      onSubstitute={setSubstitutingUid}
+                      onToggleGroup={toggleGroup}
+                      canGroup={idx > 0}
+                      grouped={grouped}
+                    />
+                  );
+                });
+                return block.length > 1 ? (
+                  <div key={bi} className="space-y-2 rounded-lg border border-accent/40 bg-accent/5 p-2">
+                    <span className="ml-1 text-xs font-semibold text-accent">{supersetLabel(block.length)}</span>
+                    {rows}
+                  </div>
+                ) : (
+                  <div key={bi} className="space-y-2">
+                    {rows}
+                  </div>
+                );
+              })}
             </div>
           </SortableContext>
         </DndContext>

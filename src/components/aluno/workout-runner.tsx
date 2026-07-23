@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { PseModal } from '@/components/aluno/pse-modal';
 import { youtubeThumbnail } from '@/lib/utils';
+import { formatScheme, groupConsecutive, supersetLabel } from '@/lib/workout-format';
 
 type Exercise = {
   exercise_id: string;
@@ -16,6 +17,8 @@ type Exercise = {
   rest_seconds: number;
   notes?: string;
   video_url?: string | null;
+  unit?: 'reps' | 'seg' | null;
+  group?: string | null;
 };
 
 export function WorkoutRunner({
@@ -41,34 +44,48 @@ export function WorkoutRunner({
       </div>
 
       <div className="space-y-3">
-        {exercises.map((ex, i) => {
-          const thumb = youtubeThumbnail(ex.video_url);
-          return (
-            <Card key={i}>
-              <CardContent className="flex items-center gap-4 p-4">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-md bg-muted">
-                  {thumb ? (
-                    <img src={thumb} alt={ex.name} className="h-full w-full object-cover" />
-                  ) : (
-                    <Play className="h-5 w-5 text-muted-foreground" />
+        {groupConsecutive(exercises).map((block, bi) => {
+          const cards = block.map((ex, i) => {
+            const thumb = youtubeThumbnail(ex.video_url);
+            return (
+              <Card key={`${bi}-${i}`}>
+                <CardContent className="flex items-center gap-4 p-4">
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-md bg-muted">
+                    {thumb ? (
+                      <img src={thumb} alt={ex.name} className="h-full w-full object-cover" />
+                    ) : (
+                      <Play className="h-5 w-5 text-muted-foreground" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium">{ex.name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {formatScheme(ex)} · pausa {ex.rest_seconds}s
+                    </p>
+                    {ex.notes && <p className="text-xs text-muted-foreground">{ex.notes}</p>}
+                  </div>
+                  {ex.video_url && (
+                    <a href={ex.video_url} target="_blank" rel="noreferrer">
+                      <Button size="sm" variant="ghost">
+                        <Play className="h-4 w-4" />
+                      </Button>
+                    </a>
                   )}
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium">{ex.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {ex.sets}x{ex.reps} · pausa {ex.rest_seconds}s
-                  </p>
-                  {ex.notes && <p className="text-xs text-muted-foreground">{ex.notes}</p>}
-                </div>
-                {ex.video_url && (
-                  <a href={ex.video_url} target="_blank" rel="noreferrer">
-                    <Button size="sm" variant="ghost">
-                      <Play className="h-4 w-4" />
-                    </Button>
-                  </a>
-                )}
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            );
+          });
+          return block.length > 1 ? (
+            <div key={bi} className="space-y-2 rounded-xl border border-accent/40 bg-accent/5 p-2">
+              <span className="ml-1 text-xs font-semibold text-accent">
+                {supersetLabel(block.length)} · faça em sequência, sem descanso entre eles
+              </span>
+              {cards}
+            </div>
+          ) : (
+            <div key={bi} className="space-y-3">
+              {cards}
+            </div>
           );
         })}
       </div>
