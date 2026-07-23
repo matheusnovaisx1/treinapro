@@ -16,9 +16,9 @@ export default async function PersonalLayout({ children }: { children: React.Rea
   if (profile.role !== 'personal') redirect('/aluno/dashboard');
 
   return (
-    <div className="flex min-h-screen bg-secondary/40">
+    <div className="flex min-h-screen flex-col bg-secondary/40 lg:flex-row">
       <PersonalSidebar plan={profile.plan} />
-      <div className="flex-1 overflow-y-auto">
+      <div className="min-w-0 flex-1 overflow-y-auto">
         <main className="container max-w-6xl py-8">{children}</main>
       </div>
     </div>

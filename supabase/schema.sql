@@ -650,6 +650,24 @@ $$ language plpgsql;
 alter table challenges enable row level security;
 alter table challenge_participants enable row level security;
 
+-- Helpers SECURITY DEFINER evitam recursão entre as policies (ver migration 010).
+create or replace function is_personal_of_challenge(p_challenge_id uuid)
+returns boolean as $$
+  select exists (
+    select 1 from challenges c
+    where c.id = p_challenge_id and c.personal_id = auth.uid()
+  );
+$$ language sql security definer stable;
+
+create or replace function is_participant_of_challenge(p_challenge_id uuid)
+returns boolean as $$
+  select exists (
+    select 1 from challenge_participants cp
+    join students s on s.id = cp.student_id
+    where cp.challenge_id = p_challenge_id and s.profile_id = auth.uid()
+  );
+$$ language sql security definer stable;
+
 create policy "challenges_personal_full_access"
   on challenges for all
   using (personal_id = auth.uid())
@@ -657,18 +675,12 @@ create policy "challenges_personal_full_access"
 
 create policy "challenges_aluno_select"
   on challenges for select
-  using (
-    exists (
-      select 1 from challenge_participants cp
-      join students s on s.id = cp.student_id
-      where cp.challenge_id = challenges.id and s.profile_id = auth.uid()
-    )
-  );
+  using (is_participant_of_challenge(id));
 
 create policy "participants_personal_full_access"
   on challenge_participants for all
-  using (exists (select 1 from challenges c where c.id = challenge_id and c.personal_id = auth.uid()))
-  with check (exists (select 1 from challenges c where c.id = challenge_id and c.personal_id = auth.uid()));
+  using (is_personal_of_challenge(challenge_id))
+  with check (is_personal_of_challenge(challenge_id));
 
 create policy "participants_aluno_select_own"
   on challenge_participants for select
