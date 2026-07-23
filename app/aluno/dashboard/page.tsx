@@ -9,6 +9,7 @@ import { PhaseProgress } from '@/components/periodization/phase-progress';
 import { calculateStreak } from '@/lib/utils';
 import { computeAchievements, nextAchievement } from '@/lib/achievements';
 import { computeProgress, type MesocycleRow } from '@/lib/periodization';
+import { medal } from '@/lib/challenges';
 
 export default async function AlunoDashboardPage() {
   const supabase = createClient();
@@ -57,6 +58,26 @@ export default async function AlunoDashboardPage() {
 
   const planMesos: MesocycleRow[] = ((activePlan?.mesocycles as any[]) ?? []).sort((a, b) => a.ord - b.ord);
   const planProgress = planMesos.length ? computeProgress(planMesos) : null;
+
+  // Desafio ativo + posição do aluno no ranking.
+  let activeChallenge: { id: string; name: string } | null = null;
+  let myRank: { position: number; score: number } | null = null;
+  if (student) {
+    const { data: parts } = await supabase
+      .from('challenge_participants')
+      .select('challenge:challenges(id, name, start_date, end_date)')
+      .eq('student_id', student.id);
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const active = (parts ?? [])
+      .map((p: any) => p.challenge)
+      .find((c: any) => c && c.start_date <= todayStr && c.end_date >= todayStr);
+    if (active) {
+      activeChallenge = { id: active.id, name: active.name };
+      const { data: board } = await supabase.rpc('challenge_leaderboard', { p_challenge_id: active.id });
+      const mine = (board as any[] | null)?.find((r) => r.student_id === student.id);
+      if (mine) myRank = { position: Number(mine.position), score: Number(mine.score) };
+    }
+  }
 
   const { count: pendingAnamnese } = student
     ? await supabase.from('anamneses').select('id', { count: 'exact', head: true }).eq('student_id', student.id).eq('status', 'pending')
@@ -107,6 +128,28 @@ export default async function AlunoDashboardPage() {
       </div>
 
       {planProgress && <PhaseProgress progress={planProgress} />}
+
+      {activeChallenge && (
+        <Link href="/aluno/desafios" className="block">
+          <Card className="transition-colors hover:border-accent">
+            <CardContent className="flex items-center gap-3 p-4">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-gold/15 text-2xl">
+                {myRank ? (medal(myRank.position) ?? '🏆') : '🏆'}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Desafio ativo</p>
+                <p className="truncate font-display font-semibold">{activeChallenge.name}</p>
+                {myRank && (
+                  <p className="text-sm text-muted-foreground">
+                    Você está em {myRank.position}º · {myRank.score} treino{myRank.score === 1 ? '' : 's'}
+                  </p>
+                )}
+              </div>
+              <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+            </CardContent>
+          </Card>
+        </Link>
+      )}
 
       {goalMet && (
         <Card className="border-none bg-gradient-to-br from-gold to-[hsl(38_96%_46%)] shadow-[0_5px_0_0_hsl(var(--gold-shadow))]">

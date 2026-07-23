@@ -251,6 +251,39 @@ export type Database = {
         Update: Partial<Database['public']['Tables']['microcycles']['Row']>;
         Relationships: [];
       };
+      challenges: {
+        Row: {
+          id: string;
+          personal_id: string;
+          name: string;
+          description: string | null;
+          start_date: string;
+          end_date: string;
+          created_at: string;
+        };
+        Insert: Partial<Database['public']['Tables']['challenges']['Row']> & {
+          personal_id: string;
+          name: string;
+          start_date: string;
+          end_date: string;
+        };
+        Update: Partial<Database['public']['Tables']['challenges']['Row']>;
+        Relationships: [];
+      };
+      challenge_participants: {
+        Row: {
+          id: string;
+          challenge_id: string;
+          student_id: string;
+          joined_at: string;
+        };
+        Insert: Partial<Database['public']['Tables']['challenge_participants']['Row']> & {
+          challenge_id: string;
+          student_id: string;
+        };
+        Update: Partial<Database['public']['Tables']['challenge_participants']['Row']>;
+        Relationships: [];
+      };
     };
     Views: {
       public_personal_profiles: {
@@ -282,6 +315,25 @@ export type Database = {
           p_mesocycles: unknown;
         };
         Returns: string;
+      };
+      create_challenge: {
+        Args: {
+          p_name: string;
+          p_description: string | null;
+          p_start: string;
+          p_end: string;
+        };
+        Returns: string;
+      };
+      challenge_leaderboard: {
+        Args: { p_challenge_id: string };
+        Returns: {
+          student_id: string;
+          full_name: string | null;
+          avatar_url: string | null;
+          score: number;
+          position: number;
+        }[];
       };
     };
     Enums: Record<string, never>;

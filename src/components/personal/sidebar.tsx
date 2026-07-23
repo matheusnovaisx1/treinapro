@@ -15,6 +15,7 @@ import {
   X,
   PanelLeftClose,
   PanelLeft,
+  Trophy,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
@@ -26,6 +27,7 @@ const links = [
   { href: '/personal/alunos', label: 'Alunos', icon: Users },
   { href: '/personal/exercicios', label: 'Exercícios', icon: Dumbbell },
   { href: '/personal/anamneses', label: 'Anamneses', icon: ClipboardList },
+  { href: '/personal/desafios', label: 'Desafios', icon: Trophy },
   { href: '/personal/configuracoes', label: 'Configurações', icon: Settings },
 ];
 

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Dumbbell, ClipboardList, Camera, MessageSquare, LogOut } from 'lucide-react';
+import { LayoutDashboard, Dumbbell, ClipboardList, Camera, MessageSquare, Trophy, LogOut } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
 
@@ -11,6 +11,7 @@ const links = [
   { href: '/aluno/treinos', label: 'Treinos', icon: Dumbbell },
   { href: '/aluno/anamnese', label: 'Anamnese', icon: ClipboardList },
   { href: '/aluno/avaliacoes', label: 'Avaliações', icon: Camera },
+  { href: '/aluno/desafios', label: 'Desafios', icon: Trophy },
   { href: '/aluno/chat', label: 'Chat', icon: MessageSquare },
 ];
 
