@@ -30,6 +30,14 @@ export function ChatThread({ currentUserId, otherUserId, otherName }: { currentU
 
       setMessages((data as any) ?? []);
       setLoading(false);
+
+      // Marca como lidas as mensagens recebidas nesta conversa (para o badge).
+      await supabase
+        .from('messages')
+        .update({ read_at: new Date().toISOString() })
+        .eq('receiver_id', currentUserId)
+        .eq('sender_id', otherUserId)
+        .is('read_at', null);
     }
     loadMessages();
 
@@ -40,7 +48,10 @@ export function ChatThread({ currentUserId, otherUserId, otherName }: { currentU
         const belongsToThread =
           (msg.sender_id === currentUserId && msg.receiver_id === otherUserId) ||
           (msg.sender_id === otherUserId && msg.receiver_id === currentUserId);
-        if (belongsToThread) setMessages((prev) => [...prev, msg]);
+        // Dedupe: a própria mensagem enviada já foi adicionada localmente (optimistic).
+        if (belongsToThread) {
+          setMessages((prev) => (prev.some((m) => m.id === msg.id) ? prev : [...prev, msg]));
+        }
       })
       .subscribe();
 
@@ -54,11 +65,24 @@ export function ChatThread({ currentUserId, otherUserId, otherName }: { currentU
   }, [messages]);
 
   async function handleSend() {
-    if (!text.trim()) return;
+    if (!text.trim() || sending) return;
     setSending(true);
-    const { error } = await supabase.from('messages').insert({ sender_id: currentUserId, receiver_id: otherUserId, text: text.trim() });
+    // Insere e já recebe a linha criada, para adicionar na hora (não depende do
+    // eco do realtime — assim a mensagem aparece na hora mesmo se o realtime
+    // estiver desabilitado). O dedupe por id no handler evita duplicar.
+    const { data, error } = await supabase
+      .from('messages')
+      .insert({ sender_id: currentUserId, receiver_id: otherUserId, text: text.trim() })
+      .select()
+      .single();
     setSending(false);
-    if (!error) setText('');
+
+    if (error) return;
+    setText('');
+    if (data) {
+      const msg = data as Message;
+      setMessages((prev) => (prev.some((m) => m.id === msg.id) ? prev : [...prev, msg]));
+    }
   }
 
   return (

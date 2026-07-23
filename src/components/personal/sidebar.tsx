@@ -16,6 +16,7 @@ import {
   PanelLeftClose,
   PanelLeft,
   Trophy,
+  MessageSquare,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
@@ -25,6 +26,7 @@ import { getPlanTier, type PlanId } from '@/lib/plans';
 const links = [
   { href: '/personal/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/personal/alunos', label: 'Alunos', icon: Users },
+  { href: '/personal/chat', label: 'Chat', icon: MessageSquare },
   { href: '/personal/exercicios', label: 'Exercícios', icon: Dumbbell },
   { href: '/personal/anamneses', label: 'Anamneses', icon: ClipboardList },
   { href: '/personal/desafios', label: 'Desafios', icon: Trophy },
@@ -33,7 +35,7 @@ const links = [
 
 const COLLAPSE_KEY = 'tp_sidebar_collapsed';
 
-export function PersonalSidebar({ plan }: { plan: PlanId }) {
+export function PersonalSidebar({ plan, unreadCount = 0 }: { plan: PlanId; unreadCount?: number }) {
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
@@ -98,7 +100,12 @@ export function PersonalSidebar({ plan }: { plan: PlanId }) {
               )}
             >
               <Icon className="h-4 w-4" />
-              {label}
+              <span className="flex-1">{label}</span>
+              {href === '/personal/chat' && unreadCount > 0 && (
+                <Badge variant="accent" className="h-5 min-w-[20px] justify-center px-1.5">
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </Badge>
+              )}
             </Link>
           );
         })}

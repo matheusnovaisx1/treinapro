@@ -807,3 +807,10 @@ create policy "brand_logos_insert_own"
 create policy "brand_logos_update_own"
   on storage.objects for update
   using (bucket_id = 'brand-logos' and (storage.foldername(name))[1] = auth.uid()::text);
+
+-- =========================================================
+-- REALTIME (ver migration 011)
+-- Habilita eventos realtime no chat. Respeita a RLS de messages.
+-- =========================================================
+alter publication supabase_realtime add table messages;
+alter table messages replica identity full;
