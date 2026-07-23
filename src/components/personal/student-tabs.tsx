@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Dumbbell, Plus, Copy } from 'lucide-react';
+import { Dumbbell, Plus, Copy, CalendarRange, ArrowRight } from 'lucide-react';
 import { StudentNotes } from '@/components/personal/student-notes';
 import { EvolutionChart, type EvolutionPoint } from '@/components/personal/evolution-chart';
 import { SendAnamneseDialog } from '@/components/personal/send-anamnese-dialog';
@@ -46,8 +46,32 @@ export function StudentTabs({
         <TabsTrigger value="anamnese">Anamnese</TabsTrigger>
         <TabsTrigger value="avaliacoes">Avaliações</TabsTrigger>
         <TabsTrigger value="treinos">Treinos</TabsTrigger>
+        <TabsTrigger value="periodizacao">Periodização</TabsTrigger>
         <TabsTrigger value="feedbacks">Feedbacks</TabsTrigger>
       </TabsList>
+
+      {/* PERIODIZAÇÃO */}
+      <TabsContent value="periodizacao" className="space-y-4">
+        <Card>
+          <CardContent className="flex flex-col items-start gap-4 p-6 sm:flex-row sm:items-center">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
+              <CalendarRange className="h-6 w-6" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display text-lg font-semibold">Plano de periodização</h3>
+              <p className="text-sm text-muted-foreground">
+                Organize a evolução de {studentName.split(' ')[0]} em fases (adaptação, construção, força e
+                descanso). O app mostra ao aluno em que fase e semana ele está.
+              </p>
+            </div>
+            <Button variant="accent" asChild>
+              <Link href={`/personal/alunos/${studentId}/plano`}>
+                Abrir periodização <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </TabsContent>
 
       {/* DADOS */}
       <TabsContent value="dados" className="space-y-6">

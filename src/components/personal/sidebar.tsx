@@ -1,9 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Users, Dumbbell, ClipboardList, Settings, LogOut, Crown, Menu, X } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Users,
+  Dumbbell,
+  ClipboardList,
+  Settings,
+  LogOut,
+  Crown,
+  Menu,
+  X,
+  PanelLeftClose,
+  PanelLeft,
+} from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -17,12 +29,28 @@ const links = [
   { href: '/personal/configuracoes', label: 'Configurações', icon: Settings },
 ];
 
+const COLLAPSE_KEY = 'tp_sidebar_collapsed';
+
 export function PersonalSidebar({ plan }: { plan: PlanId }) {
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
   const tier = getPlanTier(plan);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); // drawer mobile
+  const [collapsed, setCollapsed] = useState(false); // recolhida no desktop
+
+  // Lê a preferência salva só no cliente (evita divergência de hidratação).
+  useEffect(() => {
+    setCollapsed(localStorage.getItem(COLLAPSE_KEY) === '1');
+  }, []);
+
+  function toggleCollapsed() {
+    setCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem(COLLAPSE_KEY, next ? '1' : '0');
+      return next;
+    });
+  }
 
   async function handleLogout() {
     await supabase.auth.signOut();
@@ -39,9 +67,18 @@ export function PersonalSidebar({ plan }: { plan: PlanId }) {
           </div>
           <span className="font-display font-bold">TreinaPro</span>
         </div>
-        {/* Botão de fechar — só aparece no drawer mobile */}
+        {/* Fechar — drawer mobile */}
         <button onClick={() => setOpen(false)} className="text-white/70 hover:text-white lg:hidden" aria-label="Fechar menu">
           <X className="h-5 w-5" />
+        </button>
+        {/* Recolher — só no desktop */}
+        <button
+          onClick={toggleCollapsed}
+          className="hidden text-white/70 hover:text-white lg:block"
+          aria-label="Recolher menu"
+          title="Recolher menu"
+        >
+          <PanelLeftClose className="h-5 w-5" />
         </button>
       </div>
 
@@ -108,10 +145,25 @@ export function PersonalSidebar({ plan }: { plan: PlanId }) {
         </div>
       </header>
 
-      {/* Sidebar fixa — só no desktop */}
-      <aside className="hidden h-screen w-64 shrink-0 flex-col border-r bg-primary text-primary-foreground lg:sticky lg:top-0 lg:flex">
-        {sidebarContent}
-      </aside>
+      {/* Sidebar fixa — desktop. Some quando recolhida. */}
+      {!collapsed && (
+        <aside className="hidden h-screen w-64 shrink-0 flex-col border-r bg-primary text-primary-foreground lg:sticky lg:top-0 lg:flex">
+          {sidebarContent}
+        </aside>
+      )}
+
+      {/* Botão flutuante para reabrir quando recolhida (desktop) */}
+      {collapsed && (
+        <button
+          onClick={toggleCollapsed}
+          className="fixed left-3 top-3 z-30 hidden items-center gap-2 rounded-md border bg-primary px-3 py-2 text-sm font-medium text-primary-foreground shadow-md hover:bg-primary/90 lg:flex"
+          aria-label="Abrir menu"
+          title="Abrir menu"
+        >
+          <PanelLeft className="h-5 w-5" />
+          <span className="sr-only">Abrir menu</span>
+        </button>
+      )}
 
       {/* Drawer mobile: overlay + painel deslizante */}
       {open && (
