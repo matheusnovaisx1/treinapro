@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Trophy, CalendarDays } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -16,9 +17,11 @@ export type ChallengeCardData = {
 export function ChallengeCard({
   challenge,
   highlightStudentId,
+  actions,
 }: {
   challenge: ChallengeCardData;
   highlightStudentId?: string;
+  actions?: ReactNode;
 }) {
   const status = challengeStatus(challenge.start_date, challenge.end_date);
   const left = daysLeft(challenge.end_date);
@@ -38,9 +41,12 @@ export function ChallengeCard({
               )}
             </div>
           </div>
-          <Badge variant={status === 'active' ? 'success' : status === 'scheduled' ? 'secondary' : 'default'}>
-            {STATUS_LABEL[status]}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant={status === 'active' ? 'success' : status === 'scheduled' ? 'secondary' : 'default'}>
+              {STATUS_LABEL[status]}
+            </Badge>
+            {actions}
+          </div>
         </div>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
           <span className="flex items-center gap-1">

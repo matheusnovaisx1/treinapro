@@ -2,6 +2,7 @@ import { Trophy } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { Card, CardContent } from '@/components/ui/card';
 import { CreateChallengeDialog } from '@/components/personal/create-challenge-dialog';
+import { ChallengeActions } from '@/components/personal/challenge-actions';
 import { ChallengeCard } from '@/components/challenges/challenge-card';
 import { challengeStatus } from '@/lib/challenges';
 
@@ -39,7 +40,7 @@ export default async function DesafiosPage() {
       {list.length ? (
         <div className="grid gap-6 lg:grid-cols-2">
           {list.map((c) => (
-            <ChallengeCard key={c.id} challenge={c} />
+            <ChallengeCard key={c.id} challenge={c} actions={<ChallengeActions challenge={c} />} />
           ))}
         </div>
       ) : (

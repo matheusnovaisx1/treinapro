@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Trophy } from 'lucide-react';
@@ -27,17 +27,26 @@ function inDaysISO(days: number) {
   return d.toISOString().slice(0, 10);
 }
 
-export function CreateChallengeDialog() {
+type EditableChallenge = { id: string; name: string; description: string | null; start_date: string; end_date: string };
+
+export function CreateChallengeDialog({
+  challenge,
+  trigger,
+}: {
+  challenge?: EditableChallenge;
+  trigger?: ReactNode;
+}) {
   const router = useRouter();
   const supabase = createClient();
+  const isEdit = !!challenge;
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [start, setStart] = useState(todayISO());
-  const [end, setEnd] = useState(inDaysISO(30));
+  const [name, setName] = useState(challenge?.name ?? '');
+  const [description, setDescription] = useState(challenge?.description ?? '');
+  const [start, setStart] = useState(challenge?.start_date ?? todayISO());
+  const [end, setEnd] = useState(challenge?.end_date ?? inDaysISO(30));
   const [saving, setSaving] = useState(false);
 
-  async function handleCreate() {
+  async function handleSave() {
     if (!name.trim()) {
       toast.error('Dê um nome ao desafio');
       return;
@@ -47,38 +56,51 @@ export function CreateChallengeDialog() {
       return;
     }
     setSaving(true);
-    const { error } = await supabase.rpc('create_challenge', {
-      p_name: name.trim(),
-      p_description: description.trim() || null,
-      p_start: start,
-      p_end: end,
-    });
+
+    const { error } = isEdit
+      ? await supabase
+          .from('challenges')
+          .update({ name: name.trim(), description: description.trim() || null, start_date: start, end_date: end })
+          .eq('id', challenge!.id)
+      : await supabase.rpc('create_challenge', {
+          p_name: name.trim(),
+          p_description: description.trim() || null,
+          p_start: start,
+          p_end: end,
+        });
     setSaving(false);
 
     if (error) {
-      toast.error('Não foi possível criar o desafio', { description: error.message });
+      toast.error(isEdit ? 'Não foi possível salvar o desafio' : 'Não foi possível criar o desafio', {
+        description: error.message,
+      });
       return;
     }
-    toast.success('Desafio criado! Todos os alunos ativos entraram.');
+    toast.success(isEdit ? 'Desafio atualizado' : 'Desafio criado! Todos os alunos ativos entraram.');
     setOpen(false);
-    setName('');
-    setDescription('');
+    if (!isEdit) {
+      setName('');
+      setDescription('');
+    }
     router.refresh();
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="accent">
-          <Trophy className="h-4 w-4" /> Novo desafio
-        </Button>
+        {trigger ?? (
+          <Button variant="accent">
+            <Trophy className="h-4 w-4" /> Novo desafio
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Novo desafio</DialogTitle>
+          <DialogTitle>{isEdit ? 'Editar desafio' : 'Novo desafio'}</DialogTitle>
           <DialogDescription>
-            Todos os seus alunos ativos entram automaticamente. O ranking conta os treinos concluídos no
-            período.
+            {isEdit
+              ? 'Ajuste o nome, a descrição ou o período do desafio.'
+              : 'Todos os seus alunos ativos entram automaticamente. O ranking conta os treinos concluídos no período.'}
           </DialogDescription>
         </DialogHeader>
 
@@ -114,8 +136,8 @@ export function CreateChallengeDialog() {
         </div>
 
         <DialogFooter>
-          <Button variant="accent" onClick={handleCreate} disabled={saving}>
-            {saving ? 'Criando…' : 'Criar desafio'}
+          <Button variant="accent" onClick={handleSave} disabled={saving}>
+            {saving ? 'Salvando…' : isEdit ? 'Salvar' : 'Criar desafio'}
           </Button>
         </DialogFooter>
       </DialogContent>
