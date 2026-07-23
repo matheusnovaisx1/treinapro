@@ -1,11 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { Play, Trash2, Plus } from 'lucide-react';
+import { Play, Trash2, Plus, Check } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { youtubeThumbnail } from '@/lib/utils';
+import { cn, youtubeThumbnail } from '@/lib/utils';
 
 export type ExerciseRow = {
   id: string;
@@ -24,24 +24,40 @@ export function ExerciseGrid({
   currentUserId,
   onSelect,
   onDelete,
+  selectedIds,
+  onToggle,
 }: {
   exercises: ExerciseRow[];
   mode?: 'manage' | 'picker';
   currentUserId?: string;
   onSelect?: (exercise: ExerciseRow) => void;
   onDelete?: (id: string) => void;
+  // Modo múltiplo (seleção): quando onToggle é passado, o card vira um toggle.
+  selectedIds?: Set<string>;
+  onToggle?: (exercise: ExerciseRow) => void;
 }) {
   if (!exercises.length) {
     return <p className="py-10 text-center text-sm text-muted-foreground">Nenhum exercício encontrado.</p>;
   }
+
+  const multi = mode === 'picker' && !!onToggle;
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {exercises.map((ex) => {
         const thumb = youtubeThumbnail(ex.video_url);
         const isOwner = ex.created_by === currentUserId;
+        const selected = selectedIds?.has(ex.id) ?? false;
         return (
-          <Card key={ex.id} className="overflow-hidden">
+          <Card
+            key={ex.id}
+            onClick={multi ? () => onToggle?.(ex) : undefined}
+            className={cn(
+              'overflow-hidden',
+              multi && 'cursor-pointer transition-colors',
+              multi && selected && 'border-accent ring-1 ring-accent'
+            )}
+          >
             <div className="relative h-32 w-full bg-muted">
               {thumb ? (
                 <Image src={thumb} alt={ex.name} fill className="object-cover" />
@@ -60,9 +76,21 @@ export function ExerciseGrid({
               </div>
               <div className="flex items-center justify-between pt-1">
                 {mode === 'picker' ? (
-                  <Button size="sm" variant="accent" className="w-full" onClick={() => onSelect?.(ex)}>
-                    <Plus className="h-4 w-4" /> Adicionar ao treino
-                  </Button>
+                  multi ? (
+                    <div
+                      className={cn(
+                        'flex w-full items-center justify-center gap-2 rounded-md border px-3 py-2 text-sm font-medium',
+                        selected ? 'border-accent bg-accent/10 text-accent' : 'border-input text-muted-foreground'
+                      )}
+                    >
+                      {selected ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                      {selected ? 'Selecionado' : 'Selecionar'}
+                    </div>
+                  ) : (
+                    <Button size="sm" variant="accent" className="w-full" onClick={() => onSelect?.(ex)}>
+                      <Plus className="h-4 w-4" /> Adicionar ao treino
+                    </Button>
+                  )
                 ) : (
                   isOwner && (
                     <Button size="sm" variant="ghost" onClick={() => onDelete?.(ex.id)}>

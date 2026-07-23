@@ -41,8 +41,8 @@ export function WorkoutDayEditor({
     onChange({ ...day, exercises: arrayMove(day.exercises, oldIndex, newIndex) });
   }
 
-  function addExercise(ex: ExerciseRow) {
-    const item: DayExercise = {
+  function addExercises(exs: ExerciseRow[]) {
+    const items: DayExercise[] = exs.map((ex) => ({
       uid: nanoid(8),
       exercise_id: ex.id,
       name: ex.name,
@@ -51,8 +51,8 @@ export function WorkoutDayEditor({
       reps: '10-12',
       rest_seconds: 60,
       notes: '',
-    };
-    onChange({ ...day, exercises: [...day.exercises, item] });
+    }));
+    onChange({ ...day, exercises: [...day.exercises, ...items] });
   }
 
   function updateExercise(uid: string, patch: Partial<DayExercise>) {
@@ -98,10 +98,17 @@ export function WorkoutDayEditor({
         </DndContext>
 
         <Button variant="outline" size="sm" onClick={() => setPickerOpen(true)}>
-          <Plus className="h-4 w-4" /> Adicionar exercício
+          <Plus className="h-4 w-4" /> Adicionar exercícios
         </Button>
 
-        <ExercisePickerDialog open={pickerOpen} onOpenChange={setPickerOpen} exercises={exercisesLibrary} onSelect={addExercise} />
+        <ExercisePickerDialog
+          open={pickerOpen}
+          onOpenChange={setPickerOpen}
+          exercises={exercisesLibrary}
+          multiple
+          onSelectMany={addExercises}
+          description="Selecione vários exercícios e adicione todos de uma vez."
+        />
 
         <ExercisePickerDialog
           open={!!substitutingUid}

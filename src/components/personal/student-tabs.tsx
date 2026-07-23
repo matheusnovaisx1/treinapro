@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Dumbbell, Plus, Copy, CalendarRange, ArrowRight } from 'lucide-react';
+import { Dumbbell, Plus, Copy, CalendarRange, ArrowRight, Pencil } from 'lucide-react';
 import { StudentNotes } from '@/components/personal/student-notes';
 import { EvolutionChart, type EvolutionPoint } from '@/components/personal/evolution-chart';
 import { SendAnamneseDialog } from '@/components/personal/send-anamnese-dialog';
@@ -177,6 +177,11 @@ export function StudentTabs({
               <div className="flex items-center gap-2">
                 {w.is_extra && <Badge variant="secondary">Extra</Badge>}
                 <Badge variant={w.is_active ? 'success' : 'secondary'}>{w.is_active ? 'Ativo' : 'Encerrado'}</Badge>
+                <Button size="sm" variant="ghost" asChild>
+                  <Link href={`/personal/alunos/${studentId}/treino/${w.id}/editar`}>
+                    <Pencil className="h-4 w-4" /> Editar
+                  </Link>
+                </Button>
                 <Button size="sm" variant="ghost" asChild>
                   <Link href={`/personal/alunos/${studentId}/treino/novo?clone=${w.id}`}>
                     <Copy className="h-4 w-4" /> Clonar

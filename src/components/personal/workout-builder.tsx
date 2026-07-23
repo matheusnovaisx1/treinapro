@@ -21,6 +21,7 @@ export function WorkoutBuilder({
   personalId,
   exercisesLibrary,
   initialWorkout,
+  workoutId,
 }: {
   studentId: string;
   personalId: string;
@@ -32,6 +33,8 @@ export function WorkoutBuilder({
     is_extra: boolean;
     days: WorkoutDay[];
   };
+  // Quando presente, salva como edição (UPDATE) em vez de criar novo.
+  workoutId?: string;
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -68,20 +71,26 @@ export function WorkoutBuilder({
     }
 
     setSaving(true);
-    const { error } = await supabase.from('workouts').insert({
-      personal_id: personalId,
-      student_id: studentId,
+    const payload = {
       name,
       start_date: startDate || null,
       end_date: endDate || null,
       is_extra: isExtra,
-      is_active: true,
       days: days.map((d) => ({
         key: d.key,
         label: d.label,
         exercises: d.exercises.map((e, i) => ({ ...e, order: i })),
       })),
-    });
+    };
+
+    const { error } = workoutId
+      ? await supabase.from('workouts').update(payload).eq('id', workoutId)
+      : await supabase.from('workouts').insert({
+          ...payload,
+          personal_id: personalId,
+          student_id: studentId,
+          is_active: true,
+        });
     setSaving(false);
 
     if (error) {
@@ -89,7 +98,7 @@ export function WorkoutBuilder({
       return;
     }
 
-    toast.success('Treino criado com sucesso');
+    toast.success(workoutId ? 'Treino atualizado com sucesso' : 'Treino criado com sucesso');
     router.push(`/personal/alunos/${studentId}`);
     router.refresh();
   }
