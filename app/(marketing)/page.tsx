@@ -191,6 +191,9 @@ export default function LandingPage() {
             <Link href="/privacidade" className="hover:underline">
               Privacidade
             </Link>
+            <Link href="/cancelamento" className="hover:underline">
+              Cancelamento
+            </Link>
           </div>
         </div>
       </footer>

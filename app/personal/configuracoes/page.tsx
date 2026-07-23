@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getPlanTier } from '@/lib/plans';
+import { DeleteAccountCard } from '@/components/personal/delete-account-card';
 
 export default async function ConfiguracoesPage() {
   const supabase = createClient();
@@ -63,6 +64,8 @@ export default async function ConfiguracoesPage() {
           </Button>
         </CardContent>
       </Card>
+
+      <DeleteAccountCard email={profile?.email ?? ''} />
     </div>
   );
 }
