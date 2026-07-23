@@ -77,7 +77,15 @@ export function WorkoutRunner({
         <CheckCircle2 className="h-5 w-5" /> Concluir treino
       </Button>
 
-      <PseModal open={pseOpen} onOpenChange={setPseOpen} workoutId={workoutId} studentId={studentId} dayKey={dayKey} />
+      <PseModal
+        open={pseOpen}
+        onOpenChange={setPseOpen}
+        workoutId={workoutId}
+        studentId={studentId}
+        dayKey={dayKey}
+        dayLabel={dayLabel}
+        exerciseCount={exercises.length}
+      />
     </div>
   );
 }
