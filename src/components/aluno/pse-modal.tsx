@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { shareWorkout } from '@/lib/share';
+import { shareWorkoutImage } from '@/lib/share';
 
 const pseLabels: Record<number, string> = {
   0: 'Repouso total',
@@ -71,9 +71,13 @@ export function PseModal({
     setStep('done');
   }
 
+  const [sharing, setSharing] = useState(false);
   async function handleShare() {
-    const result = await shareWorkout({ dayLabel, exerciseCount, pse });
-    if (result === 'copied') toast.success('Resumo copiado! Cole onde quiser postar.');
+    setSharing(true);
+    const result = await shareWorkoutImage({ dayLabel, exerciseCount, pse });
+    setSharing(false);
+    if (result === 'downloaded') toast.success('Imagem baixada! Poste no seu app favorito.');
+    else if (result === 'copied') toast.success('Resumo copiado! Cole onde quiser postar.');
     else if (result === 'unsupported') toast.error('Seu navegador não permite compartilhar por aqui.');
   }
 
@@ -147,8 +151,8 @@ export function PseModal({
             </DialogHeader>
 
             <div className="flex flex-col gap-2">
-              <Button variant="accent" onClick={handleShare}>
-                <Share2 className="h-4 w-4" /> Compartilhar treino
+              <Button variant="accent" onClick={handleShare} disabled={sharing}>
+                <Share2 className="h-4 w-4" /> {sharing ? 'Gerando imagem…' : 'Compartilhar treino'}
               </Button>
               <Button variant="ghost" onClick={goToDashboard}>
                 Voltar ao início
