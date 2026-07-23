@@ -5,8 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ProgressRing } from '@/components/aluno/progress-ring';
+import { PhaseProgress } from '@/components/periodization/phase-progress';
 import { calculateStreak } from '@/lib/utils';
 import { computeAchievements, nextAchievement } from '@/lib/achievements';
+import { computeProgress, type MesocycleRow } from '@/lib/periodization';
 
 export default async function AlunoDashboardPage() {
   const supabase = createClient();
@@ -43,6 +45,18 @@ export default async function AlunoDashboardPage() {
     const lastIndex = lastLog ? days.findIndex((d) => d.key === lastLog.day_key) : -1;
     nextDay = days[(lastIndex + 1) % (days.length || 1)] ?? null;
   }
+
+  const { data: activePlan } = student
+    ? await supabase
+        .from('training_plans')
+        .select('id, mesocycles(ord, focus, planned_weeks, start_date, end_date)')
+        .eq('student_id', student.id)
+        .eq('status', 'active')
+        .maybeSingle()
+    : { data: null };
+
+  const planMesos: MesocycleRow[] = ((activePlan?.mesocycles as any[]) ?? []).sort((a, b) => a.ord - b.ord);
+  const planProgress = planMesos.length ? computeProgress(planMesos) : null;
 
   const { count: pendingAnamnese } = student
     ? await supabase.from('anamneses').select('id', { count: 'exact', head: true }).eq('student_id', student.id).eq('status', 'pending')
@@ -91,6 +105,8 @@ export default async function AlunoDashboardPage() {
           </Badge>
         )}
       </div>
+
+      {planProgress && <PhaseProgress progress={planProgress} />}
 
       {goalMet && (
         <Card className="border-none bg-gradient-to-br from-gold to-[hsl(38_96%_46%)] shadow-[0_5px_0_0_hsl(var(--gold-shadow))]">

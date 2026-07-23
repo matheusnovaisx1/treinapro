@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { MessageSquare, Phone } from 'lucide-react';
+import { MessageSquare, Phone, CalendarRange } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -70,6 +70,11 @@ export default async function StudentProfilePage({ params }: { params: { student
               </a>
             </Button>
           )}
+          <Button variant="outline" asChild>
+            <Link href={`/personal/alunos/${student.id}/plano`}>
+              <CalendarRange className="h-4 w-4" /> Periodização
+            </Link>
+          </Button>
           <Button variant="outline" asChild>
             <Link href={`/personal/alunos/${student.id}/chat`}>
               <MessageSquare className="h-4 w-4" /> Chat

@@ -12,6 +12,12 @@ export type UserRole = 'personal' | 'aluno';
 export type PlanType = 'free' | 'pro' | 'premium';
 export type InviteStatus = 'pending' | 'accepted' | 'expired';
 export type AnamneseStatus = 'pending' | 'completed';
+// Periodização (ver migration 008)
+export type TrainingGoal = 'emagrecimento' | 'hipertrofia' | 'forca' | 'condicionamento';
+export type ExperienceLevel = 'iniciante' | 'intermediario' | 'avancado';
+export type CycleStatus = 'draft' | 'active' | 'completed' | 'paused';
+export type MesocycleFocus = 'adaptacao' | 'hipertrofia' | 'forca' | 'deload';
+export type MicrocycleStatus = 'upcoming' | 'current' | 'done' | 'skipped';
 
 export type Database = {
   public: {
@@ -139,6 +145,7 @@ export type Database = {
           days: unknown;
           is_extra: boolean;
           is_active: boolean;
+          microcycle_id: string | null;
           created_at: string;
         };
         Insert: Partial<Database['public']['Tables']['workouts']['Row']> & { personal_id: string; student_id: string; name: string };
@@ -173,6 +180,77 @@ export type Database = {
         Update: Partial<Database['public']['Tables']['messages']['Row']>;
         Relationships: [];
       };
+      training_plans: {
+        Row: {
+          id: string;
+          personal_id: string;
+          student_id: string;
+          name: string;
+          goal: TrainingGoal;
+          experience: ExperienceLevel;
+          weekly_frequency: number;
+          session_minutes: number | null;
+          restrictions: string | null;
+          start_date: string;
+          end_date: string | null;
+          status: CycleStatus;
+          created_at: string;
+        };
+        Insert: Partial<Database['public']['Tables']['training_plans']['Row']> & {
+          personal_id: string;
+          student_id: string;
+          goal: TrainingGoal;
+          experience: ExperienceLevel;
+          start_date: string;
+        };
+        Update: Partial<Database['public']['Tables']['training_plans']['Row']>;
+        Relationships: [];
+      };
+      mesocycles: {
+        Row: {
+          id: string;
+          plan_id: string;
+          ord: number;
+          focus: MesocycleFocus;
+          planned_weeks: number;
+          start_date: string;
+          end_date: string;
+          status: CycleStatus;
+          target_volume: number;
+          target_intensity: number;
+          created_at: string;
+        };
+        Insert: Partial<Database['public']['Tables']['mesocycles']['Row']> & {
+          plan_id: string;
+          ord: number;
+          focus: MesocycleFocus;
+          start_date: string;
+          end_date: string;
+        };
+        Update: Partial<Database['public']['Tables']['mesocycles']['Row']>;
+        Relationships: [];
+      };
+      microcycles: {
+        Row: {
+          id: string;
+          mesocycle_id: string;
+          week_number: number;
+          start_date: string;
+          end_date: string;
+          status: MicrocycleStatus;
+          volume_multiplier: number;
+          intensity_multiplier: number;
+          created_at: string;
+        };
+        Insert: Partial<Database['public']['Tables']['microcycles']['Row']> & {
+          mesocycle_id: string;
+          week_number: number;
+          start_date: string;
+          end_date: string;
+        };
+        Update: Partial<Database['public']['Tables']['microcycles']['Row']>;
+        Relationships: [];
+      };
     };
     Views: {
       public_personal_profiles: {
@@ -189,7 +267,23 @@ export type Database = {
         Relationships: [];
       };
     };
-    Functions: Record<string, never>;
+    Functions: {
+      create_training_plan: {
+        Args: {
+          p_student_id: string;
+          p_name: string;
+          p_goal: TrainingGoal;
+          p_experience: ExperienceLevel;
+          p_weekly_frequency: number;
+          p_session_minutes: number | null;
+          p_restrictions: string | null;
+          p_start_date: string;
+          p_end_date: string | null;
+          p_mesocycles: unknown;
+        };
+        Returns: string;
+      };
+    };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };
