@@ -284,6 +284,21 @@ export type Database = {
         Update: Partial<Database['public']['Tables']['challenge_participants']['Row']>;
         Relationships: [];
       };
+      workout_templates: {
+        Row: {
+          id: string;
+          personal_id: string;
+          name: string;
+          days: unknown;
+          created_at: string;
+        };
+        Insert: Partial<Database['public']['Tables']['workout_templates']['Row']> & {
+          personal_id: string;
+          name: string;
+        };
+        Update: Partial<Database['public']['Tables']['workout_templates']['Row']>;
+        Relationships: [];
+      };
     };
     Views: {
       public_personal_profiles: {

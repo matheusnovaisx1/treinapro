@@ -17,6 +17,7 @@ import {
   PanelLeft,
   Trophy,
   MessageSquare,
+  LayoutTemplate,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
@@ -28,6 +29,7 @@ const links = [
   { href: '/personal/alunos', label: 'Alunos', icon: Users },
   { href: '/personal/chat', label: 'Chat', icon: MessageSquare },
   { href: '/personal/exercicios', label: 'Exercícios', icon: Dumbbell },
+  { href: '/personal/templates', label: 'Modelos', icon: LayoutTemplate },
   { href: '/personal/anamneses', label: 'Anamneses', icon: ClipboardList },
   { href: '/personal/desafios', label: 'Desafios', icon: Trophy },
   { href: '/personal/configuracoes', label: 'Configurações', icon: Settings },

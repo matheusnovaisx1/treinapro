@@ -277,6 +277,19 @@ create table challenge_participants (
 create index idx_challenge_participants_challenge_id on challenge_participants(challenge_id);
 create index idx_challenge_participants_student_id on challenge_participants(student_id);
 
+-- ---------------------------------------------------------
+-- MODELOS DE TREINO (ver migration 012)
+-- ---------------------------------------------------------
+create table workout_templates (
+  id uuid primary key default uuid_generate_v4(),
+  personal_id uuid not null references profiles(id) on delete cascade,
+  name text not null,
+  days jsonb not null default '[]',
+  created_at timestamptz not null default now()
+);
+
+create index idx_workout_templates_personal_id on workout_templates(personal_id);
+
 -- =========================================================
 -- FUNÇÃO: limite de alunos por plano
 -- free: 1 aluno · pro: 3 alunos · premium: ilimitado
@@ -685,6 +698,14 @@ create policy "participants_personal_full_access"
 create policy "participants_aluno_select_own"
   on challenge_participants for select
   using (exists (select 1 from students s where s.id = student_id and s.profile_id = auth.uid()));
+
+-- ---------- MODELOS DE TREINO (ver migration 012) ----------
+alter table workout_templates enable row level security;
+
+create policy "workout_templates_personal_full_access"
+  on workout_templates for all
+  using (personal_id = auth.uid())
+  with check (personal_id = auth.uid());
 
 create or replace function create_challenge(
   p_name text, p_description text, p_start date, p_end date
