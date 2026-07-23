@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, Manrope } from 'next/font/google';
 import { Providers } from '@/components/providers';
 import './globals.css';
@@ -9,6 +9,13 @@ const manrope = Manrope({ subsets: ['latin'], variable: '--font-display', displa
 export const metadata: Metadata = {
   title: 'TreinaPro — Gestão para Personal Trainers',
   description: 'Treinos, anamneses, avaliações e evolução dos seus alunos em um só lugar.',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#0f1729',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
