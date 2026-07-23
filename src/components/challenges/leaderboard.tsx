@@ -41,7 +41,7 @@ export function Leaderboard({
     <ol className="space-y-1.5">
       {rows.map((r) => {
         const isMe = r.student_id === highlightStudentId;
-        const m = medal(r.position);
+        const m = medal(r.place);
         return (
           <li
             key={r.student_id}
@@ -51,7 +51,7 @@ export function Leaderboard({
             )}
           >
             <div className="flex w-7 shrink-0 items-center justify-center text-sm font-bold">
-              {m ?? <span className="text-muted-foreground">{r.position}º</span>}
+              {m ?? <span className="text-muted-foreground">{r.place}º</span>}
             </div>
             <Avatar className="h-8 w-8">
               <AvatarImage src={r.avatar_url ?? undefined} />

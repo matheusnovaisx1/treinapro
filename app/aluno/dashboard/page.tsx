@@ -75,7 +75,7 @@ export default async function AlunoDashboardPage() {
       activeChallenge = { id: active.id, name: active.name };
       const { data: board } = await supabase.rpc('challenge_leaderboard', { p_challenge_id: active.id });
       const mine = (board as any[] | null)?.find((r) => r.student_id === student.id);
-      if (mine) myRank = { position: Number(mine.position), score: Number(mine.score) };
+      if (mine) myRank = { position: Number(mine.place), score: Number(mine.score) };
     }
   }
 

@@ -692,11 +692,11 @@ end;
 $$ language plpgsql;
 
 create or replace function challenge_leaderboard(p_challenge_id uuid)
-returns table (student_id uuid, full_name text, avatar_url text, score bigint, position bigint) as $$
+returns table (student_id uuid, full_name text, avatar_url text, score bigint, place bigint) as $$
   select
     cp.student_id, p.full_name, p.avatar_url,
     count(wl.id) as score,
-    rank() over (order by count(wl.id) desc) as position
+    rank() over (order by count(wl.id) desc) as place
   from challenge_participants cp
   join challenges c on c.id = cp.challenge_id
   join students s on s.id = cp.student_id

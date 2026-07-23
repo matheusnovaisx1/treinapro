@@ -332,7 +332,7 @@ export type Database = {
           full_name: string | null;
           avatar_url: string | null;
           score: number;
-          position: number;
+          place: number;
         }[];
       };
     };

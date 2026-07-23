@@ -7,7 +7,7 @@ export type LeaderboardRow = {
   full_name: string | null;
   avatar_url: string | null;
   score: number;
-  position: number;
+  place: number;
 };
 
 /** Status do desafio a partir das datas (comparando por dia). */
