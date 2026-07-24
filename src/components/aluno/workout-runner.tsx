@@ -46,9 +46,17 @@ export function WorkoutRunner({
   const [done, setDone] = useState<Set<string>>(new Set());
   const [finalDuration, setFinalDuration] = useState<number>(0);
   const [loads, setLoads] = useState<Record<string, LoadEntry>>({});
+  const [restEndsAt, setRestEndsAt] = useState<number | null>(null);
 
   function setLoad(exerciseId: string, patch: LoadEntry) {
     setLoads((prev) => ({ ...prev, [exerciseId]: { ...prev[exerciseId], ...patch } }));
+  }
+
+  function startRest(seconds: number) {
+    if (seconds > 0) {
+      setRestEndsAt(Date.now() + seconds * 1000);
+      if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(30);
+    }
   }
 
   const started = startAt !== null;
@@ -61,6 +69,15 @@ export function WorkoutRunner({
   }, [started, pseOpen]);
 
   const elapsed = started ? Math.floor((now - startAt!) / 1000) : 0;
+  const restRemaining = restEndsAt ? Math.max(0, Math.ceil((restEndsAt - now) / 1000)) : 0;
+
+  // Ao acabar o descanso, avisa (vibra) e some a barra.
+  useEffect(() => {
+    if (restEndsAt && restRemaining === 0) {
+      if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(200);
+      setRestEndsAt(null);
+    }
+  }, [restEndsAt, restRemaining]);
 
   const keyFor = useMemo(() => {
     return (ex: Exercise, index: number) => ex.uid ?? `i-${index}`;
@@ -178,6 +195,16 @@ export function WorkoutRunner({
                         {lastLoads[ex.exercise_id]?.weight && (
                           <span className="text-xs text-muted-foreground">última: {lastLoads[ex.exercise_id].weight}kg</span>
                         )}
+                        {ex.rest_seconds > 0 && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="ml-auto h-8"
+                            onClick={() => startRest(ex.rest_seconds)}
+                          >
+                            <Timer className="h-3.5 w-3.5" /> Descansar {ex.rest_seconds}s
+                          </Button>
+                        )}
                       </div>
                     )}
                   </div>
@@ -216,6 +243,30 @@ export function WorkoutRunner({
           <CheckCircle2 className="h-5 w-5" />
           {doneCount < total ? `Concluir treino (${doneCount}/${total})` : 'Concluir treino'}
         </Button>
+      )}
+
+      {/* Barra de descanso: fica acima da navegação inferior no mobile. */}
+      {restEndsAt && restRemaining > 0 && (
+        <div className="fixed inset-x-0 bottom-16 z-40 mx-auto max-w-3xl px-4 sm:bottom-4">
+          <div className="flex items-center gap-3 rounded-xl border bg-primary px-4 py-3 text-primary-foreground shadow-lg">
+            <Timer className="h-5 w-5 text-accent" />
+            <span className="font-display text-2xl font-bold tabular-nums">{formatClock(restRemaining)}</span>
+            <span className="text-sm text-white/70">descanso</span>
+            <div className="ml-auto flex gap-2">
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-white hover:bg-white/10"
+                onClick={() => setRestEndsAt((v) => (v ? v + 15000 : null))}
+              >
+                +15s
+              </Button>
+              <Button size="sm" variant="accent" onClick={() => setRestEndsAt(null)}>
+                Pular
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
 
       <PseModal
