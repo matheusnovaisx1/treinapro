@@ -15,6 +15,7 @@ import { AssessmentImages } from '@/components/personal/assessment-images';
 import { AssessmentComparisonCard } from '@/components/personal/assessment-comparison-card';
 import { ExportReportButton } from '@/components/personal/export-report-button';
 import { formatDate, cn } from '@/lib/utils';
+import { formatDurationLabel } from '@/lib/workout-format';
 
 export function StudentTabs({
   studentId,
@@ -39,6 +40,24 @@ export function StudentTabs({
   templates: any[];
   evolutionData: EvolutionPoint[];
 }) {
+  // Mapa exercise_id -> nome (a partir dos treinos), para exibir as cargas.
+  const exerciseNameById = new Map<string, string>();
+  for (const w of workouts) {
+    for (const d of (w.days as any[]) ?? []) {
+      for (const e of (d.exercises as any[]) ?? []) {
+        if (e.exercise_id && e.name) exerciseNameById.set(e.exercise_id, e.name);
+      }
+    }
+  }
+
+  // Resumo de acompanhamento (frequência e esforço médio).
+  const now = Date.now();
+  const last30 = workoutLogs.filter(
+    (l) => now - new Date(l.completed_at).getTime() <= 30 * 24 * 60 * 60 * 1000
+  ).length;
+  const pseValues = workoutLogs.map((l) => l.pse).filter((v): v is number => typeof v === 'number');
+  const avgPse = pseValues.length ? Math.round((pseValues.reduce((a, b) => a + b, 0) / pseValues.length) * 10) / 10 : null;
+
   return (
     <Tabs defaultValue="dados">
       <TabsList>
@@ -195,7 +214,20 @@ export function StudentTabs({
 
       {/* FEEDBACKS */}
       <TabsContent value="feedbacks" className="space-y-4">
-        <div className="flex justify-end">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-2 text-sm">
+            <span className="rounded-md bg-muted px-2.5 py-1">
+              <strong>{workoutLogs.length}</strong> treino{workoutLogs.length === 1 ? '' : 's'}
+            </span>
+            <span className="rounded-md bg-muted px-2.5 py-1">
+              <strong>{last30}</strong> nos últimos 30 dias
+            </span>
+            {avgPse !== null && (
+              <span className="rounded-md bg-muted px-2.5 py-1">
+                PSE médio <strong>{avgPse}</strong>
+              </span>
+            )}
+          </div>
           <ExportReportButton studentName={studentName} workoutLogs={workoutLogs} anamneses={anamneses} />
         </div>
         {!workoutLogs.length && (
@@ -203,21 +235,49 @@ export function StudentTabs({
             <CardContent className="py-10 text-center text-sm text-muted-foreground">Nenhum feedback registrado ainda.</CardContent>
           </Card>
         )}
-        {workoutLogs.map((log) => (
-          <Card key={log.id}>
-            <CardContent className="space-y-2 p-5">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium">{formatDate(log.completed_at)}</p>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground">PSE</span>
-                  <Badge variant={log.pse >= 8 ? 'destructive' : log.pse >= 5 ? 'accent' : 'success'}>{log.pse}/10</Badge>
+        {workoutLogs.map((log) => {
+          const loadEntries = Object.entries((log.loads as Record<string, { weight?: string; reps?: string }>) ?? {}).filter(
+            ([, v]) => v && (v.weight || v.reps)
+          );
+          return (
+            <Card key={log.id}>
+              <CardContent className="space-y-2 p-5">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="text-sm font-medium">{formatDate(log.completed_at)}</p>
+                    {log.day_key && <Badge variant="secondary">Treino {log.day_key}</Badge>}
+                    {log.duration_seconds > 0 && (
+                      <span className="text-xs text-muted-foreground">⏱ {formatDurationLabel(log.duration_seconds)}</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground">PSE</span>
+                    <Badge variant={log.pse >= 8 ? 'destructive' : log.pse >= 5 ? 'accent' : 'success'}>{log.pse}/10</Badge>
+                  </div>
                 </div>
-              </div>
-              <Progress value={(log.pse ?? 0) * 10} className={cn(log.pse >= 8 && '[&>div]:bg-destructive')} />
-              {log.comment && <p className="text-sm text-muted-foreground">"{log.comment}"</p>}
-            </CardContent>
-          </Card>
-        ))}
+                <Progress value={(log.pse ?? 0) * 10} className={cn(log.pse >= 8 && '[&>div]:bg-destructive')} />
+                {log.comment && <p className="text-sm text-muted-foreground">"{log.comment}"</p>}
+                {loadEntries.length > 0 && (
+                  <div className="mt-1 space-y-0.5 border-t pt-2">
+                    <p className="text-xs font-medium text-muted-foreground">Cargas registradas</p>
+                    <ul className="grid gap-x-4 gap-y-0.5 text-sm sm:grid-cols-2">
+                      {loadEntries.map(([exId, v]) => (
+                        <li key={exId} className="flex justify-between gap-2">
+                          <span className="truncate text-muted-foreground">{exerciseNameById.get(exId) ?? 'Exercício'}</span>
+                          <span className="shrink-0 font-medium">
+                            {v.weight ? `${v.weight}kg` : ''}
+                            {v.weight && v.reps ? ' × ' : ''}
+                            {v.reps ? `${v.reps}` : ''}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          );
+        })}
       </TabsContent>
     </Tabs>
   );
