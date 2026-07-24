@@ -4,23 +4,23 @@
 
 @layer base {
   :root {
-    /* Fundo da página — o mais escuro da hierarquia (como no mockup) */
-    --background: 220 15% 7%;
-    --foreground: 210 20% 96%;
+    /* Fundo da página — carvão levemente quente (mais aconchegante que navy puro) */
+    --background: 225 12% 9%;
+    --foreground: 40 20% 96%;
 
     /* Cards flutuam um degrau acima do fundo, criando profundidade */
-    --card: 217 24% 14%;
-    --card-foreground: 210 20% 96%;
+    --card: 222 16% 15%;
+    --card-foreground: 40 20% 96%;
 
-    --popover: 217 22% 16%;
-    --popover-foreground: 210 20% 96%;
+    --popover: 222 16% 17%;
+    --popover-foreground: 40 20% 96%;
 
     /* Ainda mais escuro que o fundo — usado no sidebar e no hero da landing */
-    --primary: 220 18% 4%;
+    --primary: 224 20% 6%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 217 18% 18%;
-    --secondary-foreground: 210 20% 96%;
+    --secondary: 222 14% 19%;
+    --secondary-foreground: 40 20% 96%;
 
     /* Laranja "fogo" — CTAs e streak (urgência, energia) */
     --accent: 24 95% 53%;
@@ -31,30 +31,31 @@
     --fire-end: 350 89% 55%;
     --fire-end-shadow: 350 75% 32%;
 
-    --muted: 217 18% 18%;
-    --muted-foreground: 215 15% 65%;
+    --muted: 222 14% 19%;
+    --muted-foreground: 30 10% 68%;
 
-    --destructive: 0 84% 60%;
+    /* Vermelho "Cardinal" (Duolingo) */
+    --destructive: 0 100% 65%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Verde vibrante — progresso, "você está indo bem" */
-    --success: 145 80% 45%;
-    --success-foreground: 0 0% 8%;
-    --success-shadow: 145 75% 22%;
+    /* Verde "Feather" (Duolingo) — progresso, "você está indo bem" */
+    --success: 94 82% 42%;
+    --success-foreground: 0 0% 100%;
+    --success-shadow: 95 88% 28%;
 
-    /* Dourado — conquista, medalha, "você bateu a meta" */
-    --gold: 43 96% 55%;
-    --gold-foreground: 220 15% 8%;
-    --gold-shadow: 38 90% 28%;
+    /* Dourado "Bee" (Duolingo) — conquista, medalha, "você bateu a meta" */
+    --gold: 47 100% 50%;
+    --gold-foreground: 30 40% 12%;
+    --gold-shadow: 42 92% 34%;
 
-    --border: 217 18% 22%;
-    --input: 217 18% 22%;
+    --border: 222 14% 23%;
+    --input: 222 14% 23%;
     --ring: 24 95% 53%;
 
     --radius: 1.25rem;
 
-    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-    --font-display: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: var(--font-nunito), ui-rounded, 'Segoe UI', system-ui, sans-serif;
+    --font-display: var(--font-nunito), ui-rounded, 'Segoe UI', system-ui, sans-serif;
 
     color-scheme: dark;
   }
@@ -62,29 +63,30 @@
   /* Tema claro — aplicado quando <html class="light">. A sidebar/hero (primary)
      seguem escuros de propósito, para contraste com o conteúdo claro. */
   html.light {
-    --background: 210 25% 98%;
-    --foreground: 220 25% 12%;
+    /* Off-white levemente quente — brilhante e acolhedor */
+    --background: 40 33% 97%;
+    --foreground: 25 18% 18%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 25% 12%;
+    --card-foreground: 25 18% 18%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 25% 12%;
+    --popover-foreground: 25 18% 18%;
 
-    --primary: 220 30% 11%;
+    --primary: 224 22% 12%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 22% 93%;
-    --secondary-foreground: 220 25% 15%;
+    --secondary: 40 26% 93%;
+    --secondary-foreground: 25 18% 20%;
 
-    --muted: 210 22% 94%;
-    --muted-foreground: 215 16% 40%;
+    --muted: 40 26% 94%;
+    --muted-foreground: 28 10% 42%;
 
     --success-foreground: 0 0% 100%;
-    --gold-foreground: 220 15% 8%;
+    --gold-foreground: 30 45% 15%;
 
-    --border: 214 22% 88%;
-    --input: 214 22% 88%;
+    --border: 38 24% 88%;
+    --input: 38 24% 88%;
 
     color-scheme: light;
   }
@@ -96,9 +98,8 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    color-scheme: dark;
   }
   h1, h2, h3, h4 {
-    @apply font-display;
+    @apply font-display font-extrabold tracking-tight;
   }
 }

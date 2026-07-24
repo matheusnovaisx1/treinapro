@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Manrope } from 'next/font/google';
+import { Nunito } from 'next/font/google';
 import { Providers } from '@/components/providers';
 import { PwaRegister } from '@/components/pwa-register';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
-const manrope = Manrope({ subsets: ['latin'], variable: '--font-display', display: 'swap' });
+// Nunito: fonte arredondada e acolhedora (aproxima o "cozy" do Duolingo),
+// usada tanto no corpo quanto nos títulos.
+const nunito = Nunito({ subsets: ['latin'], display: 'swap', variable: '--font-nunito' });
 
 export const metadata: Metadata = {
   title: 'TreinaPro — Gestão para Personal Trainers',
@@ -23,7 +24,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} ${manrope.variable}`}>
+    <html lang="pt-BR" className={nunito.variable}>
       <body>
         {/* Aplica o tema salvo antes da pintura, evitando "flash" do tema errado. */}
         <script
