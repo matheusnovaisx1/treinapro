@@ -299,6 +299,24 @@ export type Database = {
         Update: Partial<Database['public']['Tables']['workout_templates']['Row']>;
         Relationships: [];
       };
+      push_subscriptions: {
+        Row: {
+          id: string;
+          user_id: string;
+          endpoint: string;
+          p256dh: string;
+          auth: string;
+          created_at: string;
+        };
+        Insert: Partial<Database['public']['Tables']['push_subscriptions']['Row']> & {
+          user_id: string;
+          endpoint: string;
+          p256dh: string;
+          auth: string;
+        };
+        Update: Partial<Database['public']['Tables']['push_subscriptions']['Row']>;
+        Relationships: [];
+      };
     };
     Views: {
       public_personal_profiles: {

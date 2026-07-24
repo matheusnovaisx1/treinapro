@@ -290,6 +290,20 @@ create table workout_templates (
 
 create index idx_workout_templates_personal_id on workout_templates(personal_id);
 
+-- ---------------------------------------------------------
+-- PUSH SUBSCRIPTIONS (ver migration 013)
+-- ---------------------------------------------------------
+create table push_subscriptions (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid not null references profiles(id) on delete cascade,
+  endpoint text not null unique,
+  p256dh text not null,
+  auth text not null,
+  created_at timestamptz not null default now()
+);
+
+create index idx_push_subscriptions_user_id on push_subscriptions(user_id);
+
 -- =========================================================
 -- FUNÇÃO: limite de alunos por plano
 -- free: 1 aluno · pro: 3 alunos · premium: ilimitado
@@ -706,6 +720,14 @@ create policy "workout_templates_personal_full_access"
   on workout_templates for all
   using (personal_id = auth.uid())
   with check (personal_id = auth.uid());
+
+-- ---------- PUSH SUBSCRIPTIONS (ver migration 013) ----------
+alter table push_subscriptions enable row level security;
+
+create policy "push_subscriptions_own"
+  on push_subscriptions for all
+  using (user_id = auth.uid())
+  with check (user_id = auth.uid());
 
 create or replace function create_challenge(
   p_name text, p_description text, p_start date, p_end date

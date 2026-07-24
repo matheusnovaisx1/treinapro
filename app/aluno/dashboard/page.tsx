@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ProgressRing } from '@/components/aluno/progress-ring';
 import { PhaseProgress } from '@/components/periodization/phase-progress';
+import { EnableNotifications } from '@/components/aluno/enable-notifications';
 import { calculateStreak } from '@/lib/utils';
 import { computeAchievements, nextAchievement } from '@/lib/achievements';
 import { computeProgress, type MesocycleRow } from '@/lib/periodization';
@@ -126,6 +127,8 @@ export default async function AlunoDashboardPage() {
           </Badge>
         )}
       </div>
+
+      <EnableNotifications />
 
       {planProgress && <PhaseProgress progress={planProgress} />}
 
