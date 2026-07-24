@@ -103,3 +103,14 @@
     @apply font-display font-extrabold tracking-tight;
   }
 }
+
+/* Microdetalhe cozy: "pop" de celebração (ex.: emoji ao concluir treino) */
+@keyframes tp-pop {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.18); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.tp-pop { animation: tp-pop 0.45s cubic-bezier(0.18, 0.89, 0.32, 1.28) both; }
+@media (prefers-reduced-motion: reduce) {
+  .tp-pop { animation: none; }
+}

@@ -8,6 +8,7 @@ import { ProgressRing } from '@/components/aluno/progress-ring';
 import { PhaseProgress } from '@/components/periodization/phase-progress';
 import { EnableNotifications } from '@/components/aluno/enable-notifications';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { EmptyState } from '@/components/ui/empty-state';
 import { calculateStreak } from '@/lib/utils';
 import { computeAchievements, nextAchievement } from '@/lib/achievements';
 import { computeProgress, type MesocycleRow } from '@/lib/periodization';
@@ -200,11 +201,11 @@ export default async function AlunoDashboardPage() {
           </CardContent>
         </Card>
       ) : (
-        <Card>
-          <CardContent className="py-10 text-center text-sm text-muted-foreground">
-            Seu personal ainda não criou uma rotina de treino ativa.
-          </CardContent>
-        </Card>
+        <EmptyState
+          emoji="🌱"
+          title="Seu treino está a caminho"
+          description="Seu personal ainda não criou uma rotina ativa. Assim que criar, ela aparece aqui."
+        />
       )}
 
       {(!!pendingAnamnese || !!pendingAssessments) && (

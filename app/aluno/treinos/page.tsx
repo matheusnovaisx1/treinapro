@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/lib/utils';
 import { PseHistoryChart } from '@/components/aluno/pse-history-chart';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export default async function TreinosHistoricoPage() {
   const supabase = createClient();
@@ -38,7 +39,13 @@ export default async function TreinosHistoricoPage() {
       </Card>
 
       <div className="space-y-3">
-        {!logs?.length && <p className="py-6 text-center text-sm text-muted-foreground">Você ainda não concluiu nenhum treino.</p>}
+        {!logs?.length && (
+          <EmptyState
+            emoji="🏋️"
+            title="Bora começar!"
+            description="Você ainda não concluiu nenhum treino. Seu primeiro registro aparece aqui."
+          />
+        )}
         {logs?.map((log) => (
           <Card key={log.id}>
             <CardContent className="flex items-center justify-between p-4">

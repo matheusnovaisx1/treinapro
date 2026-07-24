@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Loader2, PartyPopper, Share2 } from 'lucide-react';
@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { shareWorkoutImage } from '@/lib/share';
 import { formatDurationLabel } from '@/lib/workout-format';
+import { fireConfetti } from '@/lib/confetti';
 
 const pseLabels: Record<number, string> = {
   0: 'Repouso total',
@@ -49,6 +50,11 @@ export function PseModal({
   const [saving, setSaving] = useState(false);
   // 'form' = escolher PSE; 'done' = concluído, mostra opção de compartilhar.
   const [step, setStep] = useState<'form' | 'done'>('form');
+
+  // Celebra ao chegar na tela de conclusão.
+  useEffect(() => {
+    if (step === 'done') fireConfetti();
+  }, [step]);
 
   function goToDashboard() {
     onOpenChange(false);
@@ -148,7 +154,7 @@ export function PseModal({
         ) : (
           <>
             <DialogHeader>
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-success/10 text-2xl">
+              <div className="tp-pop mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-success/10 text-2xl">
                 🎉
               </div>
               <DialogTitle className="text-center">Mandou bem!</DialogTitle>
