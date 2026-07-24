@@ -9,6 +9,7 @@ import { Progress } from '@/components/ui/progress';
 import { Dumbbell, Plus, Copy, CalendarRange, ArrowRight, Pencil } from 'lucide-react';
 import { StudentNotes } from '@/components/personal/student-notes';
 import { EvolutionChart, type EvolutionPoint } from '@/components/personal/evolution-chart';
+import { LoadProgressChart } from '@/components/personal/load-progress-chart';
 import { SendAnamneseDialog } from '@/components/personal/send-anamnese-dialog';
 import { RequestAssessmentDialog } from '@/components/personal/request-assessment-dialog';
 import { AssessmentImages } from '@/components/personal/assessment-images';
@@ -95,6 +96,7 @@ export function StudentTabs({
       {/* DADOS */}
       <TabsContent value="dados" className="space-y-6">
         <EvolutionChart data={evolutionData} />
+        <LoadProgressChart logs={workoutLogs} exerciseNameById={exerciseNameById} />
         <StudentNotes studentId={studentId} initialNotes={notes} />
       </TabsContent>
 
