@@ -100,6 +100,7 @@ export function WorkoutRunner({
 
   function finish() {
     setFinalDuration(elapsed);
+    setRestEndsAt(null);
     setPseOpen(true);
   }
 
