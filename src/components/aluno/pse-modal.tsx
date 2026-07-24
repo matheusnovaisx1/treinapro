@@ -30,6 +30,7 @@ export function PseModal({
   dayLabel,
   exerciseCount,
   durationSeconds,
+  loads,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
@@ -39,6 +40,7 @@ export function PseModal({
   dayLabel: string;
   exerciseCount: number;
   durationSeconds?: number;
+  loads?: Record<string, { weight?: string; reps?: string }>;
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -63,6 +65,7 @@ export function PseModal({
       pse,
       comment: comment || null,
       duration_seconds: durationSeconds && durationSeconds > 0 ? durationSeconds : null,
+      loads: loads && Object.keys(loads).length ? loads : {},
     });
     setSaving(false);
 

@@ -5,9 +5,12 @@ import { Play, CheckCircle2, Circle, Timer } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { PseModal } from '@/components/aluno/pse-modal';
 import { cn, youtubeThumbnail } from '@/lib/utils';
 import { formatScheme, groupConsecutive, supersetLabel, formatClock } from '@/lib/workout-format';
+
+export type LoadEntry = { weight?: string; reps?: string };
 
 type Exercise = {
   uid?: string;
@@ -28,18 +31,25 @@ export function WorkoutRunner({
   dayKey,
   dayLabel,
   exercises,
+  lastLoads = {},
 }: {
   workoutId: string;
   studentId: string;
   dayKey: string;
   dayLabel: string;
   exercises: Exercise[];
+  lastLoads?: Record<string, LoadEntry>;
 }) {
   const [pseOpen, setPseOpen] = useState(false);
   const [startAt, setStartAt] = useState<number | null>(null);
   const [now, setNow] = useState<number>(Date.now());
   const [done, setDone] = useState<Set<string>>(new Set());
   const [finalDuration, setFinalDuration] = useState<number>(0);
+  const [loads, setLoads] = useState<Record<string, LoadEntry>>({});
+
+  function setLoad(exerciseId: string, patch: LoadEntry) {
+    setLoads((prev) => ({ ...prev, [exerciseId]: { ...prev[exerciseId], ...patch } }));
+  }
 
   const started = startAt !== null;
 
@@ -146,6 +156,30 @@ export function WorkoutRunner({
                       {formatScheme(ex)} · pausa {ex.rest_seconds}s
                     </p>
                     {ex.notes && <p className="text-xs text-muted-foreground">{ex.notes}</p>}
+                    {started && (
+                      <div className="mt-2 flex flex-wrap items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                        <Input
+                          type="number"
+                          inputMode="decimal"
+                          className="h-8 w-20"
+                          placeholder={lastLoads[ex.exercise_id]?.weight ? `${lastLoads[ex.exercise_id].weight}kg` : 'kg'}
+                          value={loads[ex.exercise_id]?.weight ?? ''}
+                          onChange={(e) => setLoad(ex.exercise_id, { weight: e.target.value })}
+                          aria-label="Peso em kg"
+                        />
+                        <span className="text-xs text-muted-foreground">×</span>
+                        <Input
+                          className="h-8 w-16"
+                          placeholder={lastLoads[ex.exercise_id]?.reps ?? 'reps'}
+                          value={loads[ex.exercise_id]?.reps ?? ''}
+                          onChange={(e) => setLoad(ex.exercise_id, { reps: e.target.value })}
+                          aria-label="Repetições feitas"
+                        />
+                        {lastLoads[ex.exercise_id]?.weight && (
+                          <span className="text-xs text-muted-foreground">última: {lastLoads[ex.exercise_id].weight}kg</span>
+                        )}
+                      </div>
+                    )}
                   </div>
                   {ex.video_url && (
                     <a href={ex.video_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
@@ -193,6 +227,9 @@ export function WorkoutRunner({
         dayLabel={dayLabel}
         exerciseCount={exercises.length}
         durationSeconds={finalDuration}
+        loads={Object.fromEntries(
+          Object.entries(loads).filter(([, v]) => v && (v.weight || v.reps))
+        )}
       />
     </div>
   );
