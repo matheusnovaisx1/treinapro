@@ -1,12 +1,15 @@
 // Gera uma imagem (PNG) do treino concluído para compartilhar no Instagram,
 // GymRats, WhatsApp etc. Desenhada em canvas — roda 100% no cliente.
 
+import { formatDurationLabel } from './workout-format';
+
 export type WorkoutImageData = {
   dayLabel: string;
   exerciseCount: number;
   pse: number;
   streak?: number;
   brandName?: string | null;
+  durationSeconds?: number;
 };
 
 const W = 1080;
@@ -53,6 +56,9 @@ export async function buildWorkoutImageBlob(d: WorkoutImageData): Promise<Blob> 
     { label: 'exercícios', value: String(d.exerciseCount) },
     { label: 'esforço', value: `${d.pse}/10` },
   ];
+  if (d.durationSeconds && d.durationSeconds > 0) {
+    stats.push({ label: 'tempo', value: formatDurationLabel(d.durationSeconds) });
+  }
   if (d.streak && d.streak > 1) stats.push({ label: 'dias seguidos', value: `🔥${d.streak}` });
 
   const cardY = 900;

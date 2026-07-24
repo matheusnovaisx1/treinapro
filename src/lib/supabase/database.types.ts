@@ -161,6 +161,7 @@ export type Database = {
           completed_at: string;
           pse: number | null;
           comment: string | null;
+          duration_seconds: number | null;
           loads: unknown;
         };
         Insert: Partial<Database['public']['Tables']['workout_logs']['Row']> & { workout_id: string; student_id: string };

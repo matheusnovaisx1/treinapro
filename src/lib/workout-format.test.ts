@@ -1,5 +1,21 @@
 import { describe, it, expect } from 'vitest';
-import { formatScheme, supersetLabel, groupConsecutive } from './workout-format';
+import { formatScheme, supersetLabel, groupConsecutive, formatClock, formatDurationLabel } from './workout-format';
+
+describe('formatClock', () => {
+  it('formata MM:SS e H:MM:SS', () => {
+    expect(formatClock(0)).toBe('00:00');
+    expect(formatClock(65)).toBe('01:05');
+    expect(formatClock(3725)).toBe('1:02:05');
+  });
+});
+
+describe('formatDurationLabel', () => {
+  it('rótulo curto', () => {
+    expect(formatDurationLabel(38)).toBe('38s');
+    expect(formatDurationLabel(120)).toBe('2 min');
+    expect(formatDurationLabel(3900)).toBe('1h05');
+  });
+});
 
 describe('formatScheme', () => {
   it('formata repetições e isometria', () => {

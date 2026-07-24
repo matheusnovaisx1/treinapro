@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { shareWorkoutImage } from '@/lib/share';
+import { formatDurationLabel } from '@/lib/workout-format';
 
 const pseLabels: Record<number, string> = {
   0: 'Repouso total',
@@ -28,6 +29,7 @@ export function PseModal({
   dayKey,
   dayLabel,
   exerciseCount,
+  durationSeconds,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
@@ -36,6 +38,7 @@ export function PseModal({
   dayKey: string;
   dayLabel: string;
   exerciseCount: number;
+  durationSeconds?: number;
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -59,6 +62,7 @@ export function PseModal({
       day_key: dayKey,
       pse,
       comment: comment || null,
+      duration_seconds: durationSeconds && durationSeconds > 0 ? durationSeconds : null,
     });
     setSaving(false);
 
@@ -74,7 +78,7 @@ export function PseModal({
   const [sharing, setSharing] = useState(false);
   async function handleShare() {
     setSharing(true);
-    const result = await shareWorkoutImage({ dayLabel, exerciseCount, pse });
+    const result = await shareWorkoutImage({ dayLabel, exerciseCount, pse, durationSeconds });
     setSharing(false);
     if (result === 'downloaded') toast.success('Imagem baixada! Poste no seu app favorito.');
     else if (result === 'copied') toast.success('Resumo copiado! Cole onde quiser postar.');
@@ -146,7 +150,9 @@ export function PseModal({
               </div>
               <DialogTitle className="text-center">Mandou bem!</DialogTitle>
               <DialogDescription className="text-center">
-                Treino registrado. Que tal mostrar pra galera que você treinou hoje?
+                {durationSeconds && durationSeconds > 0
+                  ? `Treino de ${formatDurationLabel(durationSeconds)} registrado. Que tal mostrar pra galera?`
+                  : 'Treino registrado. Que tal mostrar pra galera que você treinou hoje?'}
               </DialogDescription>
             </DialogHeader>
 

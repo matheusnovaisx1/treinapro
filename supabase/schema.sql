@@ -170,6 +170,7 @@ create table workout_logs (
   completed_at timestamptz not null default now(),
   pse smallint check (pse between 0 and 10),
   comment text,
+  duration_seconds integer, -- tempo do treino (cronômetro do runner); ver migration 014
   loads jsonb default '{}' -- cargas realizadas por exercício, para gráficos de evolução
 );
 

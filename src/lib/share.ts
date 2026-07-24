@@ -3,6 +3,7 @@
 // o texto na área de transferência quando o navegador não suporta.
 
 import { buildWorkoutImageBlob } from './workout-image';
+import { formatDurationLabel } from './workout-format';
 
 export type ShareResult = 'shared' | 'cancelled' | 'copied' | 'downloaded' | 'unsupported';
 
@@ -12,12 +13,14 @@ export type WorkoutShare = {
   pse: number;
   streak?: number;
   brandName?: string | null;
+  durationSeconds?: number;
 };
 
-export function buildShareText({ dayLabel, exerciseCount, pse, streak }: WorkoutShare): string {
+export function buildShareText({ dayLabel, exerciseCount, pse, streak, durationSeconds }: WorkoutShare): string {
+  const time = durationSeconds && durationSeconds > 0 ? ` · ${formatDurationLabel(durationSeconds)}` : '';
   const lines = [
     `💪 Treino concluído: ${dayLabel}`,
-    `${exerciseCount} exercício${exerciseCount === 1 ? '' : 's'} · esforço ${pse}/10`,
+    `${exerciseCount} exercício${exerciseCount === 1 ? '' : 's'} · esforço ${pse}/10${time}`,
   ];
   if (streak && streak > 1) lines.push(`🔥 ${streak} dias seguidos`);
   lines.push('', 'Bora treinar? 💪 #TreinaPro');
@@ -64,6 +67,7 @@ export async function shareWorkoutImage(data: WorkoutShare): Promise<ShareResult
       pse: data.pse,
       streak: data.streak,
       brandName: data.brandName,
+      durationSeconds: data.durationSeconds,
     });
     file = new File([blob], 'treino-treinapro.png', { type: 'image/png' });
   } catch {
