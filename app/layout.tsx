@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Manrope } from 'next/font/google';
 import { Providers } from '@/components/providers';
+import { PwaRegister } from '@/components/pwa-register';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
@@ -9,6 +10,8 @@ const manrope = Manrope({ subsets: ['latin'], variable: '--font-display', displa
 export const metadata: Metadata = {
   title: 'TreinaPro — Gestão para Personal Trainers',
   description: 'Treinos, anamneses, avaliações e evolução dos seus alunos em um só lugar.',
+  applicationName: 'TreinaPro',
+  appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'TreinaPro' },
 };
 
 export const viewport: Viewport = {
@@ -23,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pt-BR" className={`${inter.variable} ${manrope.variable}`}>
       <body>
         <Providers>{children}</Providers>
+        <PwaRegister />
       </body>
     </html>
   );
