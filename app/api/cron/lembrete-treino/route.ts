@@ -20,6 +20,9 @@ export async function GET(request: Request) {
   if (secret && request.headers.get('authorization') !== `Bearer ${secret}`) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
+  // ?test=1 ignora a lógica inteligente e envia um push de teste a todos os
+  // alunos inscritos (útil para verificar se as notificações estão funcionando).
+  const isTest = new URL(request.url).searchParams.get('test') === '1';
   if (!process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {
     return NextResponse.json({ error: 'VAPID_MISSING' }, { status: 500 });
   }
@@ -105,7 +108,13 @@ export async function GET(request: Request) {
 
       let payload: PushPayload | null = null;
       const n = nudge.get(studentId);
-      if (n) {
+      if (isTest) {
+        payload = {
+          title: '🔔 Teste TreinaPro',
+          body: 'Se você recebeu isso, suas notificações estão funcionando!',
+          url: '/aluno/dashboard',
+        };
+      } else if (n) {
         payload = {
           title: '🏆 Você está quase no topo!',
           body: `Falta ${n.gap} treino${n.gap > 1 ? 's' : ''} pra assumir o 1º lugar em "${n.name}".`,
