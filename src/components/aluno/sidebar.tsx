@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { LayoutDashboard, Dumbbell, ClipboardList, Camera, MessageSquare, Trophy, LogOut } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 const links = [
   { href: '/aluno/dashboard', label: 'Início', icon: LayoutDashboard },
@@ -59,7 +60,8 @@ export function AlunoSidebar({ brandLogoUrl, brandName }: { brandLogoUrl?: strin
             );
           })}
         </nav>
-        <div className="border-t border-white/10 p-4">
+        <div className="space-y-1 border-t border-white/10 p-4">
+          <ThemeToggle />
           <button onClick={handleLogout} className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white">
             <LogOut className="h-4 w-4" /> Sair
           </button>

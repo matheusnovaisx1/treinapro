@@ -22,6 +22,7 @@ import {
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { getPlanTier, type PlanId } from '@/lib/plans';
 
 const links = [
@@ -130,6 +131,8 @@ export function PersonalSidebar({ plan, unreadCount = 0 }: { plan: PlanId; unrea
             <Crown className="h-4 w-4 text-accent" /> Plano Premium
           </div>
         )}
+
+        <ThemeToggle />
 
         <button
           onClick={handleLogout}

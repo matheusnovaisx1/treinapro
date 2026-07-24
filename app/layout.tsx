@@ -25,6 +25,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-BR" className={`${inter.variable} ${manrope.variable}`}>
       <body>
+        {/* Aplica o tema salvo antes da pintura, evitando "flash" do tema errado. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('tp_theme');if(t==='light'||(t==='system'&&matchMedia('(prefers-color-scheme: light)').matches)){document.documentElement.classList.add('light');}}catch(e){}})();`,
+          }}
+        />
         <Providers>{children}</Providers>
         <PwaRegister />
       </body>

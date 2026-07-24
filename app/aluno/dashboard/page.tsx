@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { ProgressRing } from '@/components/aluno/progress-ring';
 import { PhaseProgress } from '@/components/periodization/phase-progress';
 import { EnableNotifications } from '@/components/aluno/enable-notifications';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { calculateStreak } from '@/lib/utils';
 import { computeAchievements, nextAchievement } from '@/lib/achievements';
 import { computeProgress, type MesocycleRow } from '@/lib/periodization';
@@ -121,11 +122,14 @@ export default async function AlunoDashboardPage() {
           <h1 className="font-display text-2xl font-bold">Olá, {profile?.full_name?.split(' ')[0] ?? 'aluno'} 💪</h1>
           <p className="text-sm text-muted-foreground">Vamos treinar hoje?</p>
         </div>
-        {streak > 0 && (
-          <Badge variant="fire" className="gap-1 text-sm">
-            🔥 {streak} {streak === 1 ? 'dia' : 'dias'} seguidos
-          </Badge>
-        )}
+        <div className="flex items-center gap-2">
+          {streak > 0 && (
+            <Badge variant="fire" className="gap-1 text-sm">
+              🔥 {streak} {streak === 1 ? 'dia' : 'dias'} seguidos
+            </Badge>
+          )}
+          <ThemeToggle compact />
+        </div>
       </div>
 
       <EnableNotifications />
