@@ -10,6 +10,7 @@ import { EnableNotifications } from '@/components/aluno/enable-notifications';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { EmptyState } from '@/components/ui/empty-state';
 import { CelebrateOnce } from '@/components/celebrate-once';
+import { SoundToggle } from '@/components/sound-toggle';
 import { calculateStreak } from '@/lib/utils';
 import { computeAchievements, nextAchievement } from '@/lib/achievements';
 import { computeProgress, type MesocycleRow } from '@/lib/periodization';
@@ -135,6 +136,7 @@ export default async function AlunoDashboardPage() {
               🔥 {streak} {streak === 1 ? 'dia' : 'dias'} seguidos
             </Badge>
           )}
+          <SoundToggle compact />
           <ThemeToggle compact />
         </div>
       </div>

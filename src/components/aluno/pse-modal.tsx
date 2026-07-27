@@ -12,6 +12,8 @@ import { cn } from '@/lib/utils';
 import { shareWorkoutImage } from '@/lib/share';
 import { formatDurationLabel } from '@/lib/workout-format';
 import { fireConfetti } from '@/lib/confetti';
+import { playSuccessChime } from '@/lib/sound';
+import { DumbbellMascot } from '@/components/ui/mascot';
 
 const pseLabels: Record<number, string> = {
   0: 'Repouso total',
@@ -53,7 +55,10 @@ export function PseModal({
 
   // Celebra ao chegar na tela de conclusão.
   useEffect(() => {
-    if (step === 'done') fireConfetti();
+    if (step === 'done') {
+      fireConfetti();
+      playSuccessChime();
+    }
   }, [step]);
 
   function goToDashboard() {
@@ -154,8 +159,8 @@ export function PseModal({
         ) : (
           <>
             <DialogHeader>
-              <div className="tp-pop mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-success/10 text-2xl">
-                🎉
+              <div className="tp-celebrate mx-auto">
+                <DumbbellMascot size={92} />
               </div>
               <DialogTitle className="text-center">Mandou bem!</DialogTitle>
               <DialogDescription className="text-center">
