@@ -9,7 +9,7 @@ import { Progress } from '@/components/ui/progress';
 import { Dumbbell, Plus, Copy, CalendarRange, ArrowRight, Pencil } from 'lucide-react';
 import { StudentNotes } from '@/components/personal/student-notes';
 import { EvolutionChart, type EvolutionPoint } from '@/components/personal/evolution-chart';
-import { LoadProgressChart } from '@/components/personal/load-progress-chart';
+import { LoadProgressChart } from '@/components/load-progress-chart';
 import { EmptyState } from '@/components/ui/empty-state';
 import { SendAnamneseDialog } from '@/components/personal/send-anamnese-dialog';
 import { RequestAssessmentDialog } from '@/components/personal/request-assessment-dialog';

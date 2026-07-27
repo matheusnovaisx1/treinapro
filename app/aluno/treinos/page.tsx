@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/lib/utils';
 import { PseHistoryChart } from '@/components/aluno/pse-history-chart';
+import { LoadProgressChart } from '@/components/load-progress-chart';
 import { EmptyState } from '@/components/ui/empty-state';
 import { DumbbellMascot } from '@/components/ui/mascot';
 
@@ -14,14 +15,27 @@ export default async function TreinosHistoricoPage() {
 
   const { data: student } = await supabase.from('students').select('id').eq('profile_id', user!.id).single();
 
-  const { data: logs } = student
-    ? await supabase.from('workout_logs').select('*').eq('student_id', student.id).order('completed_at', { ascending: false })
-    : { data: [] as any[] };
+  const [{ data: logs }, { data: workouts }] = student
+    ? await Promise.all([
+        supabase.from('workout_logs').select('*').eq('student_id', student.id).order('completed_at', { ascending: false }),
+        supabase.from('workouts').select('days').eq('student_id', student.id),
+      ])
+    : [{ data: [] as any[] }, { data: [] as any[] }];
 
   const chartData = (logs ?? [])
     .slice(0, 15)
     .reverse()
     .map((l) => ({ date: formatDate(l.completed_at), pse: l.pse ?? 0 }));
+
+  // Nomes de exercício (dos treinos do aluno) para o gráfico de carga.
+  const exerciseNameById = new Map<string, string>();
+  for (const w of workouts ?? []) {
+    for (const d of (w.days as any[]) ?? []) {
+      for (const e of (d.exercises as any[]) ?? []) {
+        if (e.exercise_id && e.name) exerciseNameById.set(e.exercise_id, e.name);
+      }
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -29,6 +43,8 @@ export default async function TreinosHistoricoPage() {
         <h1 className="font-display text-2xl font-bold">Meu histórico</h1>
         <p className="text-sm text-muted-foreground">Seus treinos concluídos e evolução do esforço percebido.</p>
       </div>
+
+      <LoadProgressChart logs={(logs as any) ?? []} exerciseNameById={exerciseNameById} />
 
       <Card>
         <CardHeader>

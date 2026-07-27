@@ -57,7 +57,7 @@ export function LoadProgressChart({
         </CardHeader>
         <CardContent>
           <p className="py-8 text-center text-sm text-muted-foreground">
-            Quando o aluno registrar o peso nos treinos, a evolução de carga aparece aqui.
+            Registre o peso nos treinos para ver a evolução de carga aqui.
           </p>
         </CardContent>
       </Card>
