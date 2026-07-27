@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { SoundToggle } from '@/components/sound-toggle';
+import { DumbbellMascot } from '@/components/ui/mascot';
 
 const links = [
   { href: '/aluno/dashboard', label: 'Início', icon: LayoutDashboard },
@@ -37,9 +38,7 @@ export function AlunoSidebar({ brandLogoUrl, brandName }: { brandLogoUrl?: strin
             /* eslint-disable-next-line @next/next/no-img-element */
             <img src={brandLogoUrl} alt={brandName ?? 'Logo'} className="h-8 w-8 rounded-md object-cover" />
           ) : (
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-accent">
-              <Dumbbell className="h-4 w-4" />
-            </div>
+            <DumbbellMascot size={34} />
           )}
           <span className="truncate font-display font-bold">{brandName || 'TreinaPro'}</span>
         </div>

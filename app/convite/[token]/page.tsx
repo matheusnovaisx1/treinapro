@@ -5,13 +5,14 @@ import { useParams, useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
-import { Dumbbell, Loader2, AlertTriangle } from 'lucide-react';
+import { Loader2, AlertTriangle } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { acceptInviteSchema, type AcceptInviteInput } from '@/lib/validations/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { DumbbellMascot } from '@/components/ui/mascot';
 
 type InviteState = 'loading' | 'valid' | 'invalid';
 
@@ -118,9 +119,7 @@ export default function ConviteTokenPage() {
     <main className="flex min-h-screen items-center justify-center bg-secondary p-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="items-center text-center">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Dumbbell className="h-5 w-5" />
-          </div>
+          <DumbbellMascot size={80} />
           <CardTitle className="mt-2">Você foi convidado{personalName ? ` por ${personalName}` : ''}</CardTitle>
           <CardDescription>Crie sua conta de aluno para começar a treinar</CardDescription>
         </CardHeader>

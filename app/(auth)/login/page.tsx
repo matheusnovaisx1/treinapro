@@ -6,13 +6,14 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
-import { Dumbbell, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { loginSchema, type LoginInput } from '@/lib/validations/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { DumbbellMascot } from '@/components/ui/mascot';
 
 function LoginForm() {
   const router = useRouter();
@@ -98,9 +99,7 @@ function LoginForm() {
     <main className="flex min-h-screen items-center justify-center bg-secondary p-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="items-center text-center">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Dumbbell className="h-5 w-5" />
-          </div>
+          <DumbbellMascot size={72} />
           <CardTitle className="mt-2">Entrar</CardTitle>
           <CardDescription>Acesse sua conta de personal ou aluno</CardDescription>
         </CardHeader>

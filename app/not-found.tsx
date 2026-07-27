@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { DumbbellMascot } from '@/components/ui/mascot';
 
 // Mantido deliberadamente "leve": sem importar componentes de UI (Button etc.),
 // porque qualquer import que puxe bibliotecas baseadas em React Context na
@@ -21,20 +22,7 @@ export default function NotFound() {
         fontFamily: 'ui-sans-serif, system-ui, sans-serif',
       }}
     >
-      <div
-        style={{
-          display: 'flex',
-          height: '3rem',
-          width: '3rem',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: '0.75rem',
-          background: 'hsl(24 95% 53%)',
-          fontSize: '1.5rem',
-        }}
-      >
-        🏋️
-      </div>
+      <DumbbellMascot size={88} />
       <h1 style={{ fontSize: '1.875rem', fontWeight: 700, margin: 0 }}>Página não encontrada</h1>
       <p style={{ maxWidth: '24rem', color: 'hsl(215 15% 65%)' }}>
         O link que você acessou não existe ou foi movido. Volte para o início e tente novamente.

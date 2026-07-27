@@ -11,6 +11,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { EmptyState } from '@/components/ui/empty-state';
 import { CelebrateOnce } from '@/components/celebrate-once';
 import { SoundToggle } from '@/components/sound-toggle';
+import { DumbbellMascot } from '@/components/ui/mascot';
 import { calculateStreak } from '@/lib/utils';
 import { computeAchievements, nextAchievement } from '@/lib/achievements';
 import { computeProgress, type MesocycleRow } from '@/lib/periodization';
@@ -213,7 +214,7 @@ export default async function AlunoDashboardPage() {
         </Card>
       ) : (
         <EmptyState
-          emoji="🌱"
+          illustration={<DumbbellMascot />}
           title="Seu treino está a caminho"
           description="Seu personal ainda não criou uma rotina ativa. Assim que criar, ela aparece aqui."
         />

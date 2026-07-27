@@ -23,6 +23,7 @@ import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { DumbbellMascot } from '@/components/ui/mascot';
 import { getPlanTier, type PlanId } from '@/lib/plans';
 
 const links = [
@@ -69,9 +70,7 @@ export function PersonalSidebar({ plan, unreadCount = 0 }: { plan: PlanId; unrea
     <>
       <div className="flex h-16 items-center justify-between gap-2 px-5">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-accent">
-            <Dumbbell className="h-4 w-4" />
-          </div>
+          <DumbbellMascot size={34} />
           <span className="font-display font-bold">TreinaPro</span>
         </div>
         {/* Fechar — drawer mobile */}
@@ -152,9 +151,7 @@ export function PersonalSidebar({ plan, unreadCount = 0 }: { plan: PlanId; unrea
           <Menu className="h-6 w-6" />
         </button>
         <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent">
-            <Dumbbell className="h-3.5 w-3.5" />
-          </div>
+          <DumbbellMascot size={30} />
           <span className="font-display font-bold">TreinaPro</span>
         </div>
       </header>
