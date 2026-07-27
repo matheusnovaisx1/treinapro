@@ -1,9 +1,8 @@
-import { Trophy } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
-import { Card, CardContent } from '@/components/ui/card';
 import { CreateChallengeDialog } from '@/components/personal/create-challenge-dialog';
 import { ChallengeActions } from '@/components/personal/challenge-actions';
 import { ChallengeCard } from '@/components/challenges/challenge-card';
+import { EmptyState } from '@/components/ui/empty-state';
 import { challengeStatus } from '@/lib/challenges';
 
 export default async function DesafiosPage() {
@@ -44,20 +43,9 @@ export default async function DesafiosPage() {
           ))}
         </div>
       ) : (
-        <Card>
-          <CardContent className="flex flex-col items-center gap-3 py-14 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gold/15 text-gold">
-              <Trophy className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="font-medium">Nenhum desafio ainda</p>
-              <p className="text-sm text-muted-foreground">
-                Crie um desafio para engajar seus alunos com um ranking de treinos.
-              </p>
-            </div>
-            <CreateChallengeDialog />
-          </CardContent>
-        </Card>
+        <EmptyState emoji="🏆" title="Nenhum desafio ainda" description="Crie um desafio para engajar seus alunos com um ranking de treinos.">
+          <CreateChallengeDialog />
+        </EmptyState>
       )}
     </div>
   );

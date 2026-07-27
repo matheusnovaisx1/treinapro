@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { AssignTemplateDialog, type AssignStudent } from '@/components/personal/assign-template-dialog';
 import { DeleteTemplateButton } from '@/components/personal/delete-template-button';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export default async function TemplatesPage() {
   const supabase = createClient();
@@ -88,24 +89,13 @@ export default async function TemplatesPage() {
           })}
         </div>
       ) : (
-        <Card>
-          <CardContent className="flex flex-col items-center gap-3 py-14 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <LayoutTemplate className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="font-medium">Nenhum modelo ainda</p>
-              <p className="text-sm text-muted-foreground">
-                Crie um modelo de treino para reaproveitar com vários alunos.
-              </p>
-            </div>
-            <Button variant="accent" asChild>
-              <Link href="/personal/templates/novo">
-                <Plus className="h-4 w-4" /> Novo modelo
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
+        <EmptyState emoji="🧩" title="Nenhum modelo ainda" description="Crie um modelo de treino para reaproveitar com vários alunos.">
+          <Button variant="accent" asChild>
+            <Link href="/personal/templates/novo">
+              <Plus className="h-4 w-4" /> Novo modelo
+            </Link>
+          </Button>
+        </EmptyState>
       )}
     </div>
   );

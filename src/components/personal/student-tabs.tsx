@@ -10,6 +10,7 @@ import { Dumbbell, Plus, Copy, CalendarRange, ArrowRight, Pencil } from 'lucide-
 import { StudentNotes } from '@/components/personal/student-notes';
 import { EvolutionChart, type EvolutionPoint } from '@/components/personal/evolution-chart';
 import { LoadProgressChart } from '@/components/personal/load-progress-chart';
+import { EmptyState } from '@/components/ui/empty-state';
 import { SendAnamneseDialog } from '@/components/personal/send-anamnese-dialog';
 import { RequestAssessmentDialog } from '@/components/personal/request-assessment-dialog';
 import { AssessmentImages } from '@/components/personal/assessment-images';
@@ -105,11 +106,7 @@ export function StudentTabs({
         <div className="flex justify-end">
           <SendAnamneseDialog studentId={studentId} templates={templates} />
         </div>
-        {!anamneses.length && (
-          <Card>
-            <CardContent className="py-10 text-center text-sm text-muted-foreground">Nenhuma anamnese enviada ainda.</CardContent>
-          </Card>
-        )}
+        {!anamneses.length && <EmptyState emoji="📋" title="Nenhuma anamnese ainda" description="Envie uma anamnese para conhecer melhor o aluno." />}
         {anamneses.map((a) => (
           <Card key={a.id}>
             <CardHeader className="flex-row items-center justify-between space-y-0">
@@ -138,11 +135,7 @@ export function StudentTabs({
           <RequestAssessmentDialog studentId={studentId} />
         </div>
         <AssessmentComparisonCard assessments={assessments} />
-        {!assessments.length && (
-          <Card>
-            <CardContent className="py-10 text-center text-sm text-muted-foreground">Nenhuma avaliação registrada.</CardContent>
-          </Card>
-        )}
+        {!assessments.length && <EmptyState emoji="📸" title="Nenhuma avaliação ainda" description="Peça fotos e medidas para acompanhar a evolução física." />}
         {assessments.map((a) => (
           <Card key={a.id}>
             <CardHeader className="flex-row items-center justify-between space-y-0">
@@ -175,11 +168,7 @@ export function StudentTabs({
             </Link>
           </Button>
         </div>
-        {!workouts.length && (
-          <Card>
-            <CardContent className="py-10 text-center text-sm text-muted-foreground">Nenhum treino criado ainda.</CardContent>
-          </Card>
-        )}
+        {!workouts.length && <EmptyState emoji="🏋️" title="Nenhum treino ainda" description="Monte a primeira rotina de treino para este aluno." />}
         {workouts.map((w) => (
           <Card key={w.id}>
             <CardContent className="flex flex-wrap items-center justify-between gap-3 p-5">
@@ -232,11 +221,7 @@ export function StudentTabs({
           </div>
           <ExportReportButton studentName={studentName} workoutLogs={workoutLogs} anamneses={anamneses} />
         </div>
-        {!workoutLogs.length && (
-          <Card>
-            <CardContent className="py-10 text-center text-sm text-muted-foreground">Nenhum feedback registrado ainda.</CardContent>
-          </Card>
-        )}
+        {!workoutLogs.length && <EmptyState emoji="💬" title="Nenhum feedback ainda" description="Quando o aluno concluir treinos, os feedbacks aparecem aqui." />}
         {workoutLogs.map((log) => {
           const loadEntries = Object.entries((log.loads as Record<string, { weight?: string; reps?: string }>) ?? {}).filter(
             ([, v]) => v && (v.weight || v.reps)

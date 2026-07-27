@@ -1,10 +1,11 @@
 import Link from 'next/link';
-import { MessageSquare, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { initials } from '@/lib/utils';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export default async function PersonalChatListPage() {
   const supabase = createClient();
@@ -74,14 +75,7 @@ export default async function PersonalChatListPage() {
           ))}
         </div>
       ) : (
-        <Card>
-          <CardContent className="flex flex-col items-center gap-3 py-14 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
-              <MessageSquare className="h-6 w-6" />
-            </div>
-            <p className="text-sm text-muted-foreground">Você ainda não tem alunos ativos para conversar.</p>
-          </CardContent>
-        </Card>
+        <EmptyState emoji="💬" title="Nenhuma conversa ainda" description="Você ainda não tem alunos ativos para conversar." />
       )}
     </div>
   );

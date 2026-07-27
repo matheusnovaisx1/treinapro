@@ -9,6 +9,7 @@ import { PhaseProgress } from '@/components/periodization/phase-progress';
 import { EnableNotifications } from '@/components/aluno/enable-notifications';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { EmptyState } from '@/components/ui/empty-state';
+import { CelebrateOnce } from '@/components/celebrate-once';
 import { calculateStreak } from '@/lib/utils';
 import { computeAchievements, nextAchievement } from '@/lib/achievements';
 import { computeProgress, type MesocycleRow } from '@/lib/periodization';
@@ -113,6 +114,11 @@ export default async function AlunoDashboardPage() {
   const weeklyPercent = weeklyTarget > 0 ? (weeklyCompleted / weeklyTarget) * 100 : 0;
   const goalMet = weeklyTarget > 0 && weeklyCompleted >= weeklyTarget;
 
+  // Id da semana (segunda-feira) para celebrar a meta só uma vez por semana.
+  const monday = new Date();
+  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+  const weekId = monday.toISOString().slice(0, 10);
+
   const achievements = computeAchievements(streak, totalWorkouts ?? 0);
   const upNext = nextAchievement(streak, totalWorkouts ?? 0);
 
@@ -160,6 +166,8 @@ export default async function AlunoDashboardPage() {
       )}
 
       {goalMet && (
+        <>
+        <CelebrateOnce id={`goal-${weekId}`} />
         <Card className="border-none bg-gradient-to-br from-gold to-[hsl(38_96%_46%)] shadow-[0_5px_0_0_hsl(var(--gold-shadow))]">
           <CardContent className="flex items-center gap-3 p-5">
             <Trophy className="h-8 w-8 shrink-0 text-gold-foreground" />
@@ -171,6 +179,7 @@ export default async function AlunoDashboardPage() {
             </div>
           </CardContent>
         </Card>
+        </>
       )}
 
       {workout && nextDay ? (
