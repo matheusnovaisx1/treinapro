@@ -32,6 +32,7 @@ export function WorkoutRunner({
   dayLabel,
   exercises,
   lastLoads = {},
+  bestLoads = {},
 }: {
   workoutId: string;
   studentId: string;
@@ -39,6 +40,7 @@ export function WorkoutRunner({
   dayLabel: string;
   exercises: Exercise[];
   lastLoads?: Record<string, LoadEntry>;
+  bestLoads?: Record<string, number>;
 }) {
   const [pseOpen, setPseOpen] = useState(false);
   const [startAt, setStartAt] = useState<number | null>(null);
@@ -46,6 +48,7 @@ export function WorkoutRunner({
   const [done, setDone] = useState<Set<string>>(new Set());
   const [finalDuration, setFinalDuration] = useState<number>(0);
   const [loads, setLoads] = useState<Record<string, LoadEntry>>({});
+  const [records, setRecords] = useState<{ name: string; weight: number }[]>([]);
   const [restEndsAt, setRestEndsAt] = useState<number | null>(null);
 
   function setLoad(exerciseId: string, patch: LoadEntry) {
@@ -101,6 +104,16 @@ export function WorkoutRunner({
   function finish() {
     setFinalDuration(elapsed);
     setRestEndsAt(null);
+
+    // Detecta recordes pessoais: peso informado maior que o melhor anterior.
+    const recs: { name: string; weight: number }[] = [];
+    for (const ex of exercises) {
+      const w = parseFloat(String(loads[ex.exercise_id]?.weight ?? '').replace(',', '.'));
+      const prev = bestLoads[ex.exercise_id];
+      if (!isNaN(w) && w > 0 && prev !== undefined && w > prev) recs.push({ name: ex.name, weight: w });
+    }
+    setRecords(recs);
+
     setPseOpen(true);
   }
 
@@ -282,6 +295,7 @@ export function WorkoutRunner({
         loads={Object.fromEntries(
           Object.entries(loads).filter(([, v]) => v && (v.weight || v.reps))
         )}
+        records={records}
       />
     </div>
   );

@@ -34,6 +34,7 @@ export function PseModal({
   exerciseCount,
   durationSeconds,
   loads,
+  records = [],
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
@@ -44,6 +45,7 @@ export function PseModal({
   exerciseCount: number;
   durationSeconds?: number;
   loads?: Record<string, { weight?: string; reps?: string }>;
+  records?: { name: string; weight: number }[];
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -53,13 +55,14 @@ export function PseModal({
   // 'form' = escolher PSE; 'done' = concluído, mostra opção de compartilhar.
   const [step, setStep] = useState<'form' | 'done'>('form');
 
-  // Celebra ao chegar na tela de conclusão.
+  // Celebra ao chegar na tela de conclusão (extra se bateu recorde).
   useEffect(() => {
     if (step === 'done') {
       fireConfetti();
       playSuccessChime();
+      if (records.length > 0) setTimeout(fireConfetti, 500);
     }
-  }, [step]);
+  }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function goToDashboard() {
     onOpenChange(false);
@@ -169,6 +172,20 @@ export function PseModal({
                   : 'Treino registrado. Que tal mostrar pra galera que você treinou hoje?'}
               </DialogDescription>
             </DialogHeader>
+
+            {records.length > 0 && (
+              <div className="rounded-lg border border-gold/40 bg-gold/10 p-3">
+                <p className="text-center text-sm font-bold text-foreground">🏆 Novo recorde pessoal!</p>
+                <ul className="mt-1 space-y-0.5 text-center text-sm">
+                  {records.map((r) => (
+                    <li key={r.name}>
+                      <span className="text-muted-foreground">{r.name}: </span>
+                      <span className="font-semibold">{r.weight}kg</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             <div className="flex flex-col gap-2">
               <Button variant="accent" onClick={handleShare} disabled={sharing}>

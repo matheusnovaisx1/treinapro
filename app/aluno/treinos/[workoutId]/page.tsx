@@ -32,19 +32,21 @@ export default async function TreinoExecucaoPage({
   const videoMap = new Map((exerciseDetails ?? []).map((e) => [e.id, e.video_url]));
   const exercises = (day.exercises ?? []).map((e: any) => ({ ...e, video_url: videoMap.get(e.exercise_id) ?? null }));
 
-  // Última carga registrada por exercício (para mostrar como referência no runner).
+  // Cargas do aluno: última (referência no input) e recorde (maior peso já feito).
   const { data: recentLogs } = await supabase
     .from('workout_logs')
     .select('loads, completed_at')
     .eq('student_id', student.id)
-    .order('completed_at', { ascending: false })
-    .limit(12);
+    .order('completed_at', { ascending: false });
 
   const lastLoads: Record<string, { weight?: string; reps?: string }> = {};
+  const bestLoads: Record<string, number> = {};
   for (const log of recentLogs ?? []) {
     const loads = (log.loads as Record<string, { weight?: string; reps?: string }>) ?? {};
     for (const [exId, val] of Object.entries(loads)) {
       if (!lastLoads[exId] && val && (val.weight || val.reps)) lastLoads[exId] = val; // mais recente vence
+      const w = parseFloat(String(val?.weight ?? '').replace(',', '.'));
+      if (!isNaN(w) && w > 0) bestLoads[exId] = Math.max(bestLoads[exId] ?? 0, w);
     }
   }
 
@@ -56,6 +58,7 @@ export default async function TreinoExecucaoPage({
       dayLabel={day.label}
       exercises={exercises}
       lastLoads={lastLoads}
+      bestLoads={bestLoads}
     />
   );
 }
