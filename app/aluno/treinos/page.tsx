@@ -37,12 +37,43 @@ export default async function TreinosHistoricoPage() {
     }
   }
 
+  // Recordes pessoais: maior peso já registrado por exercício.
+  const bestByExercise = new Map<string, number>();
+  for (const log of logs ?? []) {
+    const loads = (log.loads as Record<string, { weight?: string }>) ?? {};
+    for (const [exId, v] of Object.entries(loads)) {
+      const wt = parseFloat(String(v?.weight ?? '').replace(',', '.'));
+      if (!isNaN(wt) && wt > 0) bestByExercise.set(exId, Math.max(bestByExercise.get(exId) ?? 0, wt));
+    }
+  }
+  const records = Array.from(bestByExercise.entries())
+    .map(([exId, weight]) => ({ name: exerciseNameById.get(exId) ?? 'Exercício', weight }))
+    .sort((a, b) => b.weight - a.weight);
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="font-display text-2xl font-bold">Meu histórico</h1>
         <p className="text-sm text-muted-foreground">Seus treinos concluídos e evolução do esforço percebido.</p>
       </div>
+
+      {records.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">🏆 Meus recordes</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="grid gap-x-4 gap-y-1.5 sm:grid-cols-2">
+              {records.map((r) => (
+                <li key={r.name} className="flex items-center justify-between gap-2 rounded-md bg-muted px-3 py-2 text-sm">
+                  <span className="truncate">{r.name}</span>
+                  <span className="shrink-0 font-bold text-accent">{r.weight}kg</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
 
       <LoadProgressChart logs={(logs as any) ?? []} exerciseNameById={exerciseNameById} />
 

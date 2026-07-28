@@ -95,7 +95,7 @@ export function PseModal({
   const [sharing, setSharing] = useState(false);
   async function handleShare() {
     setSharing(true);
-    const result = await shareWorkoutImage({ dayLabel, exerciseCount, pse, durationSeconds });
+    const result = await shareWorkoutImage({ dayLabel, exerciseCount, pse, durationSeconds, records });
     setSharing(false);
     if (result === 'downloaded') toast.success('Imagem baixada! Poste no seu app favorito.');
     else if (result === 'copied') toast.success('Resumo copiado! Cole onde quiser postar.');

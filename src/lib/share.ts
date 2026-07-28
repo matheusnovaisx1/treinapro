@@ -14,14 +14,22 @@ export type WorkoutShare = {
   streak?: number;
   brandName?: string | null;
   durationSeconds?: number;
+  records?: { name: string; weight: number }[];
 };
 
-export function buildShareText({ dayLabel, exerciseCount, pse, streak, durationSeconds }: WorkoutShare): string {
+export function buildShareText({ dayLabel, exerciseCount, pse, streak, durationSeconds, records }: WorkoutShare): string {
   const time = durationSeconds && durationSeconds > 0 ? ` · ${formatDurationLabel(durationSeconds)}` : '';
   const lines = [
     `💪 Treino concluído: ${dayLabel}`,
     `${exerciseCount} exercício${exerciseCount === 1 ? '' : 's'} · esforço ${pse}/10${time}`,
   ];
+  if (records && records.length) {
+    lines.push(
+      records.length === 1
+        ? `🏆 Novo recorde: ${records[0].name} ${records[0].weight}kg`
+        : `🏆 ${records.length} novos recordes!`
+    );
+  }
   if (streak && streak > 1) lines.push(`🔥 ${streak} dias seguidos`);
   lines.push('', 'Bora treinar? 💪 #TreinaPro');
   return lines.join('\n');
@@ -68,6 +76,7 @@ export async function shareWorkoutImage(data: WorkoutShare): Promise<ShareResult
       streak: data.streak,
       brandName: data.brandName,
       durationSeconds: data.durationSeconds,
+      records: data.records,
     });
     file = new File([blob], 'treino-treinapro.png', { type: 'image/png' });
   } catch {

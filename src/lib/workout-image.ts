@@ -10,6 +10,7 @@ export type WorkoutImageData = {
   streak?: number;
   brandName?: string | null;
   durationSeconds?: number;
+  records?: { name: string; weight: number }[];
 };
 
 const W = 1080;
@@ -49,6 +50,20 @@ export async function buildWorkoutImageBlob(d: WorkoutImageData): Promise<Blob> 
   for (const line of lines.slice(0, 3)) {
     ctx.fillText(line, PAD, ty);
     ty += titleSize + 8;
+  }
+
+  // Faixa dourada de "Novo recorde"
+  if (d.records && d.records.length) {
+    const text =
+      d.records.length === 1 ? `🏆 Novo recorde: ${d.records[0].name} ${d.records[0].weight}kg` : `🏆 ${d.records.length} novos recordes!`;
+    ctx.font = `800 34px ${SANS}`;
+    const tw = Math.min(ctx.measureText(text).width + 48, W - PAD * 2);
+    roundRect(ctx, PAD, ty + 6, tw, 62, 20);
+    ctx.fillStyle = '#ffc800';
+    ctx.fill();
+    ctx.fillStyle = '#20140c';
+    ctx.fillText(text, PAD + 24, ty + 47);
+    ty += 88;
   }
 
   // Cartões de estatística
