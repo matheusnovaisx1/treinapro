@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { Card, CardContent } from '@/components/ui/card';
 import { AssessmentUploadCard } from '@/components/aluno/assessment-upload-card';
 import { AssessmentComparisonCard } from '@/components/personal/assessment-comparison-card';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export default async function AlunoAvaliacoesPage() {
   const supabase = createClient();
@@ -23,9 +24,7 @@ export default async function AlunoAvaliacoesPage() {
       </div>
 
       {!assessments?.length && (
-        <Card>
-          <CardContent className="py-10 text-center text-sm text-muted-foreground">Nenhuma avaliação registrada ainda.</CardContent>
-        </Card>
+        <EmptyState emoji="📸" title="Nenhuma avaliação ainda" description="Quando seu personal solicitar, envie suas fotos e medidas por aqui." />
       )}
 
       <AssessmentComparisonCard assessments={(assessments as any) ?? []} />
