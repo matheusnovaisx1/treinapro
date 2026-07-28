@@ -6,13 +6,21 @@ import { createAdminClient } from '@/lib/supabase/server';
 // Usa o client admin (service role) porque o novo usuário ainda não tem
 // permissão via RLS para se auto-vincular a um personal.
 export async function POST(request: Request) {
-  const { token, userId, fullName, email, phone } = await request.json();
+  const { token, userId, fullName, phone } = await request.json();
 
-  if (!token || !userId || !email) {
+  if (!token || !userId) {
     return NextResponse.json({ error: 'INVALID_PAYLOAD' }, { status: 400 });
   }
 
   const admin = createAdminClient();
+
+  // Verifica que userId é um usuário real do Auth e usa o e-mail do Auth como
+  // fonte da verdade (evita vincular/spoofar e-mail arbitrário).
+  const { data: authRes, error: authErr } = await admin.auth.admin.getUserById(userId);
+  const email = authRes?.user?.email;
+  if (authErr || !email) {
+    return NextResponse.json({ error: 'INVALID_USER' }, { status: 400 });
+  }
 
   const { data: invite, error: inviteError } = await admin.from('invites').select('*').eq('token', token).single();
 
