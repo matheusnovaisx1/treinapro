@@ -249,7 +249,7 @@ export function StudentTabs({
               </span>
             )}
           </div>
-          <ExportReportButton studentName={studentName} workoutLogs={workoutLogs} anamneses={anamneses} />
+          <ExportReportButton studentName={studentName} workoutLogs={workoutLogs} anamneses={anamneses} records={records} />
         </div>
         {!workoutLogs.length && <EmptyState emoji="💬" title="Nenhum feedback ainda" description="Quando o aluno concluir treinos, os feedbacks aparecem aqui." />}
         {workoutLogs.map((log) => {
