@@ -26,17 +26,29 @@ describe('computeAchievements', () => {
     const result = computeAchievements(7, 10);
     expect(result.map((a) => a.id)).toEqual(expect.arrayContaining(['streak-3', 'streak-7', 'total-10']));
   });
+
+  it('unlocks record milestones from the number of load records', () => {
+    const result = computeAchievements(0, 0, 5);
+    expect(result.map((a) => a.id)).toEqual(expect.arrayContaining(['record-1', 'record-5']));
+    expect(result.map((a) => a.id)).not.toContain('record-10');
+  });
 });
 
 describe('nextAchievement', () => {
   it('suggests the closest upcoming milestone', () => {
-    const result = nextAchievement(1, 8);
+    // recordsCount alto para isolar a comparação streak vs total
+    const result = nextAchievement(1, 8, 25);
     // faltam 2 dias de streak (pro milestone de 3) vs faltam 2 treinos (pro milestone de 10)
     expect(result?.remaining).toBe(2);
   });
 
   it('returns null when every milestone has been reached', () => {
-    expect(nextAchievement(1000, 1000)).toBeNull();
+    expect(nextAchievement(1000, 1000, 100)).toBeNull();
+  });
+
+  it('suggests the first record when none were set yet and it is closest', () => {
+    const result = nextAchievement(1000, 1000, 0);
+    expect(result?.label).toBe('Primeiro recorde de carga');
   });
 
   it('picks streak over total when streak is closer', () => {

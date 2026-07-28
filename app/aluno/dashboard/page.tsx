@@ -98,7 +98,7 @@ export default async function AlunoDashboardPage() {
     : { count: 0 };
 
   const { data: recentLogs } = student
-    ? await supabase.from('workout_logs').select('completed_at').eq('student_id', student.id).order('completed_at', { ascending: false }).limit(90)
+    ? await supabase.from('workout_logs').select('completed_at, loads').eq('student_id', student.id).order('completed_at', { ascending: false }).limit(90)
     : { data: [] as any[] };
 
   const { count: totalWorkouts } = student
@@ -121,8 +121,19 @@ export default async function AlunoDashboardPage() {
   monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
   const weekId = monday.toISOString().slice(0, 10);
 
-  const achievements = computeAchievements(streak, totalWorkouts ?? 0);
-  const upNext = nextAchievement(streak, totalWorkouts ?? 0);
+  // Nº de exercícios distintos com carga registrada (dimensão de conquistas).
+  const recordExerciseIds = new Set<string>();
+  for (const l of recentLogs ?? []) {
+    const loads = ((l as any).loads as Record<string, { weight?: string }>) ?? {};
+    for (const [exId, v] of Object.entries(loads)) {
+      const wt = parseFloat(String(v?.weight ?? '').replace(',', '.'));
+      if (!isNaN(wt) && wt > 0) recordExerciseIds.add(exId);
+    }
+  }
+  const recordsCount = recordExerciseIds.size;
+
+  const achievements = computeAchievements(streak, totalWorkouts ?? 0, recordsCount);
+  const upNext = nextAchievement(streak, totalWorkouts ?? 0, recordsCount);
 
   return (
     <div className="space-y-6">
