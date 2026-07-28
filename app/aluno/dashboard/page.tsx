@@ -62,7 +62,7 @@ export default async function AlunoDashboardPage() {
         .maybeSingle()
     : { data: null };
 
-  const planMesos: MesocycleRow[] = ((activePlan?.mesocycles as any[]) ?? []).sort((a, b) => a.ord - b.ord);
+  const planMesos: MesocycleRow[] = (((activePlan as any)?.mesocycles as any[]) ?? []).sort((a, b) => a.ord - b.ord);
   const planProgress = planMesos.length ? computeProgress(planMesos) : null;
 
   // Desafio ativo + posição do aluno no ranking.
