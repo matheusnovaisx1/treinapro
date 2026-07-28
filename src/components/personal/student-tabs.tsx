@@ -60,6 +60,19 @@ export function StudentTabs({
   const pseValues = workoutLogs.map((l) => l.pse).filter((v): v is number => typeof v === 'number');
   const avgPse = pseValues.length ? Math.round((pseValues.reduce((a, b) => a + b, 0) / pseValues.length) * 10) / 10 : null;
 
+  // Recordes: maior peso já registrado por exercício.
+  const bestByExercise = new Map<string, number>();
+  for (const log of workoutLogs) {
+    const loads = (log.loads as Record<string, { weight?: string }>) ?? {};
+    for (const [exId, v] of Object.entries(loads)) {
+      const wt = parseFloat(String(v?.weight ?? '').replace(',', '.'));
+      if (!isNaN(wt) && wt > 0) bestByExercise.set(exId, Math.max(bestByExercise.get(exId) ?? 0, wt));
+    }
+  }
+  const records = Array.from(bestByExercise.entries())
+    .map(([exId, weight]) => ({ name: exerciseNameById.get(exId) ?? 'Exercício', weight }))
+    .sort((a, b) => b.weight - a.weight);
+
   return (
     <Tabs defaultValue="dados">
       <TabsList>
@@ -98,6 +111,23 @@ export function StudentTabs({
       <TabsContent value="dados" className="space-y-6">
         <EvolutionChart data={evolutionData} />
         <LoadProgressChart logs={workoutLogs} exerciseNameById={exerciseNameById} />
+        {records.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">🏆 Recordes de carga</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="grid gap-x-4 gap-y-1.5 sm:grid-cols-2">
+                {records.map((r) => (
+                  <li key={r.name} className="flex items-center justify-between gap-2 rounded-md bg-muted px-3 py-2 text-sm">
+                    <span className="truncate">{r.name}</span>
+                    <span className="shrink-0 font-bold text-accent">{r.weight}kg</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        )}
         <StudentNotes studentId={studentId} initialNotes={notes} />
       </TabsContent>
 
