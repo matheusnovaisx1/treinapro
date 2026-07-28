@@ -16,8 +16,10 @@ function todaySaoPaulo(): string {
 //   2. Lembrete de treino para quem ainda não treinou hoje.
 // Protegido pelo CRON_SECRET. Retorna diagnóstico.
 export async function GET(request: Request) {
+  // Fail-closed: sem CRON_SECRET configurado, o endpoint fica indisponível
+  // (evita exposição pública acidental do disparo de push).
   const secret = process.env.CRON_SECRET;
-  if (secret && request.headers.get('authorization') !== `Bearer ${secret}`) {
+  if (!secret || request.headers.get('authorization') !== `Bearer ${secret}`) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
   // ?test=1 ignora a lógica inteligente e envia um push de teste a todos os

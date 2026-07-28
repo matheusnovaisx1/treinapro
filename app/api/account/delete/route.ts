@@ -6,7 +6,14 @@ import { stripe } from '@/lib/stripe/client';
 // Exclui a conta do usuário autenticado (LGPD): cancela a assinatura na Stripe
 // (se houver) e apaga o usuário do Auth — o que cascateia todos os dados
 // (profile, alunos, treinos, mensagens, etc.). Ação irreversível.
-export async function POST() {
+export async function POST(request: Request) {
+  // Defesa contra CSRF (além do SameSite dos cookies): exige mesma origem.
+  const origin = request.headers.get('origin');
+  const host = request.headers.get('host');
+  if (origin && host && new URL(origin).host !== host) {
+    return NextResponse.json({ error: 'CROSS_ORIGIN' }, { status: 403 });
+  }
+
   const supabase = createClient();
   const {
     data: { user },
