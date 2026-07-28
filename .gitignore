@@ -8,3 +8,7 @@ npm-debug.log*
 *.tsbuildinfo
 .vercel
 coverage
+
+# Capacitor / Xcode build output
+/build
+ios/App/build
