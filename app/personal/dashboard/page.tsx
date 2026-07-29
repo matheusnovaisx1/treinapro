@@ -96,7 +96,7 @@ export default async function PersonalDashboardPage() {
       <div className="grid gap-4 sm:grid-cols-3">
         <Card>
           <CardContent className="flex items-center gap-4 p-5">
-            <div className="flex h-11 w-11 items-center justify-center rounded-md bg-primary/10 text-primary">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <Users className="h-5 w-5" />
             </div>
             <div>
@@ -108,7 +108,7 @@ export default async function PersonalDashboardPage() {
 
         <Card>
           <CardContent className="flex items-center gap-4 p-5">
-            <div className="flex h-11 w-11 items-center justify-center rounded-md bg-accent/10 text-accent">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent">
               <Crown className="h-5 w-5" />
             </div>
             <div>
@@ -120,7 +120,7 @@ export default async function PersonalDashboardPage() {
 
         <Card>
           <CardContent className="flex items-center gap-4 p-5">
-            <div className="flex h-11 w-11 items-center justify-center rounded-md bg-primary/10 text-primary">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <ClipboardList className="h-5 w-5" />
             </div>
             <div>

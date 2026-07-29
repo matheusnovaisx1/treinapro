@@ -52,7 +52,7 @@ export default async function PersonalChatListPage() {
       {rows.length ? (
         <div className="space-y-2">
           {rows.map((r) => (
-            <Link key={r.studentId} href={`/personal/alunos/${r.studentId}/chat`} className="block">
+            <Link key={r.studentId} href={`/personal/alunos/${r.studentId}/chat`} className="tp-tap block">
               <Card className="transition-colors hover:border-accent">
                 <CardContent className="flex items-center gap-3 p-3">
                   <Avatar className="h-11 w-11">
