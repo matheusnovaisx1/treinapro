@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Nunito } from 'next/font/google';
 import { Providers } from '@/components/providers';
 import { PwaRegister } from '@/components/pwa-register';
+import { NavProgress } from '@/components/nav-progress';
 import './globals.css';
 
 // Nunito: fonte arredondada e acolhedora (aproxima o "cozy" do Duolingo),
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `(function(){try{var t=localStorage.getItem('tp_theme');if(t==='light'||(t==='system'&&matchMedia('(prefers-color-scheme: light)').matches)){document.documentElement.classList.add('light');}}catch(e){}})();`,
           }}
         />
+        <NavProgress />
         <Providers>{children}</Providers>
         <PwaRegister />
       </body>

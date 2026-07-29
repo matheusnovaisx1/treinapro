@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Dumbbell, ClipboardList, Camera, ArrowRight, PlayCircle, Trophy } from 'lucide-react';
+import { Dumbbell, ClipboardList, Camera, ArrowRight, Trophy } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -217,7 +217,7 @@ export default async function AlunoDashboardPage() {
               </div>
               <Button size="lg" variant="accent" asChild>
                 <Link href={`/aluno/treinos/${workout.id}?day=${nextDay.key}`}>
-                  <PlayCircle className="h-5 w-5" /> Iniciar treino
+                  Ver treino de hoje <ArrowRight className="h-5 w-5" />
                 </Link>
               </Button>
             </div>

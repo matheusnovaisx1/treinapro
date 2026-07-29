@@ -122,23 +122,35 @@ export function WorkoutRunner({
 
   return (
     <div className="space-y-4 pb-4">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <Badge variant="accent">{dayKey}</Badge>
-          <h1 className="mt-2 font-display text-2xl font-bold">{dayLabel}</h1>
-        </div>
-        {started && (
-          <div className="flex flex-col items-end">
-            <div className="flex items-center gap-1.5 rounded-lg bg-accent/10 px-3 py-1.5 font-display text-lg font-bold tabular-nums text-accent">
-              <Timer className="h-4 w-4" />
+      {/* Hero: nome do treino + ação principal (iniciar) ou cronômetro */}
+      <div className="rounded-2xl border bg-card p-5 shadow-sm">
+        <Badge variant="accent">{dayKey}</Badge>
+        <h1 className="mt-2 font-display text-2xl font-bold">{dayLabel}</h1>
+        {!started ? (
+          <>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {total} exercício{total === 1 ? '' : 's'} · toque em iniciar para começar
+            </p>
+            <Button size="lg" variant="accent" className="mt-4 w-full" onClick={start}>
+              <Play className="h-5 w-5" /> Iniciar treino
+            </Button>
+          </>
+        ) : (
+          <div className="mt-4 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 rounded-lg bg-accent/10 px-3 py-2 font-display text-2xl font-bold tabular-nums text-accent">
+              <Timer className="h-5 w-5" />
               {formatClock(elapsed)}
             </div>
-            <span className="mt-1 text-xs text-muted-foreground">
-              {doneCount}/{total} exercícios
+            <span className="text-sm font-medium text-muted-foreground">
+              {doneCount}/{total} feitos
             </span>
           </div>
         )}
       </div>
+
+      <p className="px-1 text-sm font-semibold text-muted-foreground">
+        {started ? 'Marque cada exercício ao terminar ✓' : 'Exercícios de hoje'}
+      </p>
 
       <div className="space-y-3">
         {groupConsecutive(exercises).map((block, bi) => {
@@ -248,11 +260,7 @@ export function WorkoutRunner({
         })}
       </div>
 
-      {!started ? (
-        <Button size="lg" variant="accent" className="w-full" onClick={start}>
-          <Play className="h-5 w-5" /> Iniciar treino
-        </Button>
-      ) : (
+      {started && (
         <Button size="lg" variant="success" className="w-full" onClick={finish}>
           <CheckCircle2 className="h-5 w-5" />
           {doneCount < total ? `Concluir treino (${doneCount}/${total})` : 'Concluir treino'}
