@@ -132,3 +132,18 @@
 @media (prefers-reduced-motion: reduce) {
   .tp-celebrate { animation: none; }
 }
+
+/* Chama do streak "tremeluzindo" */
+@keyframes tp-flicker {
+  0%, 100% { transform: scale(1) rotate(-3deg); }
+  50% { transform: scale(1.14) rotate(3deg); }
+}
+.tp-flame { display: inline-block; animation: tp-flicker 1.6s ease-in-out infinite; transform-origin: 50% 85%; }
+
+/* Tap tátil em cards/links interativos */
+.tp-tap { transition: transform 0.12s ease; }
+.tp-tap:active { transform: scale(0.98); }
+
+@media (prefers-reduced-motion: reduce) {
+  .tp-flame, .tp-tap:active { animation: none; transform: none; }
+}

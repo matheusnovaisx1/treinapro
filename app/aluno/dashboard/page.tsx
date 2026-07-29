@@ -145,7 +145,7 @@ export default async function AlunoDashboardPage() {
         <div className="flex items-center gap-2">
           {streak > 0 && (
             <Badge variant="fire" className="gap-1 text-sm">
-              🔥 {streak} {streak === 1 ? 'dia' : 'dias'} seguidos
+              <span className="tp-flame">🔥</span> {streak} {streak === 1 ? 'dia' : 'dias'} seguidos
             </Badge>
           )}
           <SoundToggle compact />
@@ -158,7 +158,7 @@ export default async function AlunoDashboardPage() {
       {planProgress && <PhaseProgress progress={planProgress} />}
 
       {activeChallenge && (
-        <Link href="/aluno/desafios" className="block">
+        <Link href="/aluno/desafios" className="tp-tap block">
           <Card className="transition-colors hover:border-accent">
             <CardContent className="flex items-center gap-3 p-4">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-gold/15 text-2xl">
