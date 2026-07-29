@@ -18,7 +18,10 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 5,
+  // Trava o zoom/pan (evita a WebView do app nativo abrir "deslocada" e ter
+  // que arrastar de lado). Dá o comportamento app-like.
+  maximumScale: 1,
+  userScalable: false,
   themeColor: '#0f1729',
 };
 

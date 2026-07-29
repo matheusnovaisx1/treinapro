@@ -96,8 +96,13 @@
   * {
     @apply border-border;
   }
+  html {
+    /* Evita rolagem horizontal acidental (especialmente na WebView nativa) */
+    overflow-x: hidden;
+  }
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    overflow-x: hidden;
   }
   h1, h2, h3, h4 {
     @apply font-display font-extrabold tracking-tight;
