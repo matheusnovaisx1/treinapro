@@ -61,18 +61,22 @@ export function StudentsList({ students }: { students: StudentRow[] }) {
             const inactiveDays = daysSince(s.lastWorkoutAt);
             const isInactive = inactiveDays === null || inactiveDays >= INACTIVITY_THRESHOLD_DAYS;
             return (
-              <Link key={s.id} href={`/personal/alunos/${s.id}`} className="flex items-center justify-between px-5 py-4 hover:bg-muted">
-                <div className="flex items-center gap-3">
-                  <Avatar>
+              <Link
+                key={s.id}
+                href={`/personal/alunos/${s.id}`}
+                className="flex flex-col gap-2 px-5 py-4 hover:bg-muted sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div className="flex min-w-0 items-center gap-3">
+                  <Avatar className="shrink-0">
                     <AvatarImage src={s.profile?.avatar_url ?? undefined} />
                     <AvatarFallback>{initials(s.profile?.full_name)}</AvatarFallback>
                   </Avatar>
-                  <div>
-                    <p className="text-sm font-medium">{s.profile?.full_name ?? 'Aluno'}</p>
-                    <p className="text-xs text-muted-foreground">{s.profile?.email}</p>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">{s.profile?.full_name ?? 'Aluno'}</p>
+                    <p className="truncate text-xs text-muted-foreground">{s.profile?.email}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2 pl-[52px] sm:shrink-0 sm:justify-end sm:pl-0">
                   {s.status === 'active' && isInactive && (
                     <Badge variant="destructive" className="gap-1">
                       <AlertTriangle className="h-3 w-3" />

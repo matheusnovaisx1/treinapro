@@ -46,23 +46,23 @@ export default async function StudentProfilePage({ params }: { params: { student
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <Avatar className="h-14 w-14">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 items-center gap-4">
+          <Avatar className="h-14 w-14 shrink-0">
             <AvatarImage src={profile?.avatar_url ?? undefined} />
             <AvatarFallback className="text-base">{initials(profile?.full_name)}</AvatarFallback>
           </Avatar>
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h1 className="font-display text-2xl font-bold">{profile?.full_name ?? 'Aluno'}</h1>
-              <Badge variant={student.status === 'active' ? 'success' : 'secondary'}>
+              <h1 className="truncate font-display text-2xl font-bold">{profile?.full_name ?? 'Aluno'}</h1>
+              <Badge variant={student.status === 'active' ? 'success' : 'secondary'} className="shrink-0">
                 {student.status === 'active' ? 'Ativo' : student.status}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground">{profile?.email}</p>
+            <p className="truncate text-sm text-muted-foreground">{profile?.email}</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {profile?.phone && (
             <Button variant="outline" asChild>
               <a href={whatsappLink(profile.phone, `Oi ${profile.full_name?.split(' ')[0] ?? ''}! `)} target="_blank" rel="noreferrer">
