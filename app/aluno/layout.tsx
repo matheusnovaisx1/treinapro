@@ -24,7 +24,7 @@ export default async function AlunoLayout({ children }: { children: React.ReactN
   return (
     <div className="flex min-h-screen bg-secondary/40" style={accentHsl ? ({ '--accent': accentHsl, '--ring': accentHsl } as React.CSSProperties) : undefined}>
       <AlunoSidebar brandLogoUrl={personal?.brand_logo_url} brandName={personal?.full_name} />
-      <div className="flex-1 overflow-y-auto pb-16 sm:pb-0">
+      <div className="flex-1 overflow-y-auto pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:pb-0">
         <main className="container max-w-3xl py-8">{children}</main>
       </div>
     </div>
