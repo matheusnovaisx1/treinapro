@@ -197,8 +197,12 @@ export default async function AlunoDashboardPage() {
       )}
 
       {workout && nextDay ? (
-        <Card className="border-none bg-primary text-primary-foreground">
-          <CardContent className="flex flex-col gap-5 p-6 sm:flex-row sm:items-center">
+        <Card className="relative overflow-hidden border-none bg-gradient-to-br from-primary to-[hsl(222_18%_12%)] text-primary-foreground shadow-[0_10px_30px_-12px_hsl(var(--accent)/0.5)]">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-accent/20 blur-3xl"
+          />
+          <CardContent className="relative flex flex-col gap-5 p-6 sm:flex-row sm:items-center">
             {weeklyTarget > 0 && (
               <ProgressRing
                 percent={weeklyPercent}

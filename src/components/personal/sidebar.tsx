@@ -146,7 +146,7 @@ export function PersonalSidebar({ plan, unreadCount = 0 }: { plan: PlanId; unrea
   return (
     <>
       {/* Barra superior — só no mobile */}
-      <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-white/10 bg-primary px-4 text-primary-foreground lg:hidden">
+      <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-white/10 bg-primary/90 px-4 text-primary-foreground backdrop-blur-lg lg:hidden">
         <button onClick={() => setOpen(true)} aria-label="Abrir menu">
           <Menu className="h-6 w-6" />
         </button>
