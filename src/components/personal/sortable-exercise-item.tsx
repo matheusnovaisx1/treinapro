@@ -54,42 +54,55 @@ export function SortableExerciseItem({
 
       <div className="flex-1 min-w-[140px] font-medium">{item.name}</div>
 
-      <div className="grid grid-cols-4 gap-2 sm:w-auto sm:flex sm:items-center">
-        <Input
-          type="number"
-          min={1}
-          className="w-16"
-          value={item.sets}
-          onChange={(e) => onChange(item.uid, { sets: Number(e.target.value) })}
-          aria-label="Séries"
-        />
-        <Input
-          className="w-20"
-          placeholder={isIso ? 'seg' : 'reps'}
-          value={item.reps}
-          onChange={(e) => onChange(item.uid, { reps: e.target.value })}
-          aria-label={isIso ? 'Segundos de isometria' : 'Repetições'}
-        />
+      <div className="grid grid-cols-4 gap-2 sm:w-auto sm:flex sm:items-end">
+        <label className="flex flex-col gap-1">
+          <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Séries</span>
+          <Input
+            type="number"
+            min={1}
+            className="w-full sm:w-16"
+            value={item.sets}
+            onChange={(e) => onChange(item.uid, { sets: Number(e.target.value) })}
+            aria-label="Séries"
+          />
+        </label>
+        <label className="flex flex-col gap-1">
+          <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+            {isIso ? 'Segundos' : 'Reps'}
+          </span>
+          <Input
+            className="w-full sm:w-20"
+            placeholder={isIso ? 'seg' : 'reps'}
+            value={item.reps}
+            onChange={(e) => onChange(item.uid, { reps: e.target.value })}
+            aria-label={isIso ? 'Segundos de isometria' : 'Repetições'}
+          />
+        </label>
         {/* Alterna repetições ↔ isometria (segundos) */}
-        <Button
-          size="sm"
-          variant={isIso ? 'accent' : 'outline'}
-          className="w-14 px-0"
-          onClick={() => onChange(item.uid, { unit: isIso ? 'reps' : 'seg' })}
-          title={isIso ? 'Isometria (segundos)' : 'Repetições'}
-        >
-          {isIso ? <Timer className="h-3.5 w-3.5" /> : null}
-          {isIso ? 'seg' : 'reps'}
-        </Button>
-        <Input
-          type="number"
-          min={0}
-          className="w-20"
-          placeholder="pausa (s)"
-          value={item.rest_seconds}
-          onChange={(e) => onChange(item.uid, { rest_seconds: Number(e.target.value) })}
-          aria-label="Pausa em segundos"
-        />
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Tipo</span>
+          <Button
+            size="sm"
+            variant={isIso ? 'accent' : 'outline'}
+            className="w-full px-0 sm:w-14"
+            onClick={() => onChange(item.uid, { unit: isIso ? 'reps' : 'seg' })}
+            title={isIso ? 'Isometria (segundos)' : 'Repetições'}
+          >
+            {isIso ? <Timer className="h-3.5 w-3.5" /> : null}
+            {isIso ? 'seg' : 'reps'}
+          </Button>
+        </div>
+        <label className="flex flex-col gap-1">
+          <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Pausa (s)</span>
+          <Input
+            type="number"
+            min={0}
+            className="w-full sm:w-20"
+            value={item.rest_seconds}
+            onChange={(e) => onChange(item.uid, { rest_seconds: Number(e.target.value) })}
+            aria-label="Pausa em segundos"
+          />
+        </label>
       </div>
 
       <Input
