@@ -169,6 +169,11 @@ export function WorkoutRunner({
                 )}
               >
                 <CardContent className="flex items-center gap-4 p-4">
+                  {!started && (
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
+                      {idx + 1}
+                    </span>
+                  )}
                   {started && (
                     <button
                       type="button"
